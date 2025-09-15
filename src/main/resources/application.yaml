@@ -1,0 +1,11 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://{PTKNOW_DATASOURCE_ADDRESS}/{PTKNOW_DATASOURCE_NAME}
+    name: ${PTKNOW_DATASOURCE_USERNAME}
+    password: ${PTKNOW_DATASOURCE_PASSWORD}
+    driver-class-name: PostgreSQL
+  application:
+    name: ptknow
