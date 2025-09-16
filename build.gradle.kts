@@ -5,8 +5,7 @@ plugins {
 }
 
 group = "io.github.zapolyarnydev"
-version = "0.0.1-SNAPSHOT"
-description = "Demo project for Spring Boot"
+version = "0.0.1"
 
 java {
 	toolchain {
@@ -33,6 +32,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 
 	runtimeOnly("org.postgresql:postgresql")
+
+	implementation("org.springframework.boot:spring-boot-starter-security")
 
 	compileOnly("org.mapstruct:mapstruct:1.5.5.Final")
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
