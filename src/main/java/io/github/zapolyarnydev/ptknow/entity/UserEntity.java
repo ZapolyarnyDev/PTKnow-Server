@@ -12,12 +12,15 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthEntity {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, unique = true, nullable = false)
     UUID id;
+
+    @Column(nullable = false)
+    String fullName;
 
     @Column(updatable = false, unique = true, nullable = false)
     String email;
@@ -30,7 +33,8 @@ public class AuthEntity {
     Instant registeredAt;
 
     @Builder
-    public AuthEntity(String email, String password, Instant registeredAt) {
+    public UserEntity(String fullName, String email, String password, Instant registeredAt) {
+        this.fullName = fullName;
         this.registeredAt = registeredAt;
         this.password = password;
         this.email = email;

@@ -1,6 +1,6 @@
 package io.github.zapolyarnydev.ptknow.repository;
 
-import io.github.zapolyarnydev.ptknow.entity.AuthEntity;
+import io.github.zapolyarnydev.ptknow.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,9 +8,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface AuthRepository extends JpaRepository<AuthEntity, UUID> {
+public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
-    Optional<AuthEntity> findByEmail(String email);
+    Optional<UserEntity> findByEmail(String email);
 
     boolean existsByEmail(String email);
 }
