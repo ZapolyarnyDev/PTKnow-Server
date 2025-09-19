@@ -1,6 +1,8 @@
 package io.github.zapolyarnydev.ptknow.config;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import io.github.zapolyarnydev.ptknow.properties.JwtProperties;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +21,10 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtProperties jwtProperties;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtDecoder jwtDecoder) throws Exception {
@@ -45,12 +50,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtEncoder jwtEncoder(@Value("${security.jwt}") String key) {
+    public JwtEncoder jwtEncoder() {
+        String key = jwtProperties.getSecretKey();
         return new NimbusJwtEncoder(new ImmutableSecret<>(key.getBytes()));
     }
 
     @Bean
-    public JwtDecoder jwtDecoder(@Value("${security.jwt}") String key) {
+    public JwtDecoder jwtDecoder() {
+        String key = jwtProperties.getSecretKey();
         return NimbusJwtDecoder.withSecretKey(new SecretKeySpec(key.getBytes(), "HmacSHA256")).build();
     }
 }
