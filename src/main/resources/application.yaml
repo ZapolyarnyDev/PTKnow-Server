@@ -15,3 +15,6 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   application:
     name: ptknow
+
+security:
+  jwt: ${SECRET_JWT_KEY}
