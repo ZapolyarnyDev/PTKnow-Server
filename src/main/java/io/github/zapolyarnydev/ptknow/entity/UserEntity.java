@@ -1,10 +1,16 @@
 package io.github.zapolyarnydev.ptknow.entity;
 
+import io.github.zapolyarnydev.ptknow.exception.credentials.InvalidCredentialsException;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -12,7 +18,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserEntity {
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -22,27 +28,95 @@ public class UserEntity {
     @Column(nullable = false)
     String fullName;
 
-    @Column(updatable = false, unique = true, nullable = false)
+    @Column(updatable = false, unique = true)
     String email;
 
-    @Column(nullable = false)
     @Setter
     String password;
 
     @Column(nullable = false, updatable = false)
     Instant registeredAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    Role role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, updatable = false)
+    AuthProvider authProvider;
+
+    @Column(updatable = false, unique = true)
+    String providerId;
+
     @Builder
-    public UserEntity(String fullName, String email, String password, Instant registeredAt) {
+    public UserEntity(String fullName, String email, String password, Role role) {
         this.fullName = fullName;
-        this.registeredAt = registeredAt;
-        this.password = password;
         this.email = email;
+        this.password = password;
+        this.role = role;
+        this.authProvider = AuthProvider.LOCAL;
+    }
+
+    @Builder(builderMethodName = "provideVK")
+    public UserEntity(String fullName, String providerId, Role role) {
+        this.fullName = fullName;
+        this.role = role;
+        this.authProvider = AuthProvider.VK;
+        this.providerId = providerId;
     }
 
     @PrePersist
-    public void prePersist() {
+    @PreUpdate
+    public void validateFields() {
         if(registeredAt == null)
             registeredAt = Instant.now();
+
+        if(role == null)
+            role = Role.USER;
+
+        checkProvidingCredentials();
+    }
+
+    private void checkProvidingCredentials() {
+        if(authProvider == AuthProvider.LOCAL){
+            if(email == null || password == null)
+                throw new InvalidCredentialsException("Local auth provider require email and password");
+            if(email.isBlank() || password.isBlank())
+                    throw new InvalidCredentialsException("Email and password cannot be empty in local auth provider");
+        }
+        else if(authProvider == AuthProvider.VK && providerId == null)
+            throw new InvalidCredentialsException("VK auth provider require providerId");
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(
+                new SimpleGrantedAuthority(role.authorityName())
+        );
+    }
+
+    @Override
+    public String getUsername() {
+        return email != null ? email : (authProvider.name().toLowerCase() + ":" + providerId);
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
