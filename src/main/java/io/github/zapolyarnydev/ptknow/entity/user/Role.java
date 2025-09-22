@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.ptknow.entity;
+package io.github.zapolyarnydev.ptknow.entity.user;
 
 import lombok.RequiredArgsConstructor;
 

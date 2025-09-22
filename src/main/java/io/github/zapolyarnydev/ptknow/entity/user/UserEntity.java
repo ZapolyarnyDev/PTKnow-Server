@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.ptknow.entity;
+package io.github.zapolyarnydev.ptknow.entity.user;
 
 import io.github.zapolyarnydev.ptknow.exception.credentials.InvalidCredentialsException;
 import jakarta.persistence.*;
