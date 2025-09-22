@@ -1,11 +1,13 @@
 package io.github.zapolyarnydev.ptknow.service;
 
 import io.github.zapolyarnydev.ptknow.jwt.JwtTokens;
-import io.github.zapolyarnydev.ptknow.entity.UserEntity;
+import io.github.zapolyarnydev.ptknow.entity.user.UserEntity;
 import io.github.zapolyarnydev.ptknow.jwt.ClaimType;
 import io.github.zapolyarnydev.ptknow.jwt.JwtClaim;
 import io.github.zapolyarnydev.ptknow.properties.JwtProperties;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -14,11 +16,12 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class JwtService {
 
-    private final JwtProperties properties;
-    private final JwtEncoder jwtEncoder;
+    JwtProperties properties;
+    JwtEncoder jwtEncoder;
 
     public String generateAccessToken(UserEntity user) {
         var now = Instant.now();
