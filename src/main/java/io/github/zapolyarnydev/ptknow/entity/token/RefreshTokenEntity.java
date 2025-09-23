@@ -1,5 +1,6 @@
 package io.github.zapolyarnydev.ptknow.entity.token;
 
+import io.github.zapolyarnydev.ptknow.entity.user.UserEntity;
 import io.github.zapolyarnydev.ptknow.exception.credentials.InvalidCredentialsException;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,7 +15,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class TokenEntity {
+public class RefreshTokenEntity {
 
     @Id
     @Column(unique = true, nullable = false, updatable = false)
@@ -24,6 +25,10 @@ public class TokenEntity {
 
     @Column(unique = true, nullable = false, updatable = false)
     String token;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id")
+    UserEntity user;
 
     @Column(nullable = false, updatable = false)
     Instant expireDate;
