@@ -1,6 +1,7 @@
 package io.github.zapolyarnydev.ptknow.config;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import io.github.zapolyarnydev.ptknow.filter.JwtAuthFilter;
 import io.github.zapolyarnydev.ptknow.properties.JwtProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,8 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -27,19 +30,15 @@ public class SecurityConfig {
     private final JwtProperties jwtProperties;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtDecoder jwtDecoder) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtDecoder jwtDecoder,
+                                                   JwtAuthFilter authFilter) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/register", "/auth/login", "/auth/refresh", "/oauth2/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .oauth2Login(oauth -> oauth
-                        .defaultSuccessUrl("/auth/oauth2/success", true)
-                )
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt.decoder(jwtDecoder))
-                );
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -51,13 +50,13 @@ public class SecurityConfig {
 
     @Bean
     public JwtEncoder jwtEncoder() {
-        String key = jwtProperties.getSecretKey();
+        String key = jwtProperties.getKey();
         return new NimbusJwtEncoder(new ImmutableSecret<>(key.getBytes()));
     }
 
     @Bean
     public JwtDecoder jwtDecoder() {
-        String key = jwtProperties.getSecretKey();
+        String key = jwtProperties.getKey();
         return NimbusJwtDecoder.withSecretKey(new SecretKeySpec(key.getBytes(), "HmacSHA256")).build();
     }
 }
