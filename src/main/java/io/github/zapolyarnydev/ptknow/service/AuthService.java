@@ -1,5 +1,7 @@
 package io.github.zapolyarnydev.ptknow.service;
 
+import io.github.zapolyarnydev.ptknow.dto.LoginDTO;
+import io.github.zapolyarnydev.ptknow.dto.RegistrationDTO;
 import io.github.zapolyarnydev.ptknow.entity.user.UserEntity;
 import io.github.zapolyarnydev.ptknow.exception.email.EmailAlreadyUsedException;
 import io.github.zapolyarnydev.ptknow.exception.email.EmailNotFoundException;
@@ -43,6 +45,11 @@ public class AuthService implements UserDetailsService {
     }
 
     @Transactional
+    public UserEntity register(RegistrationDTO registrationDTO) {
+        return register(registrationDTO.fullName(), registrationDTO.email(), registrationDTO.password());
+    }
+
+    @Transactional
     public UserEntity authenticate(String email, String password) {
         var entity = loadUserByUsername(email);
 
@@ -51,6 +58,11 @@ public class AuthService implements UserDetailsService {
 
         log.info("User log in successfully. Email: {}", email);
         return entity;
+    }
+
+    @Transactional
+    public UserEntity authenticate(LoginDTO loginDTO) {
+        return authenticate(loginDTO.email(), loginDTO.password());
     }
 
     @Override
