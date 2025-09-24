@@ -26,9 +26,11 @@ public class JwtProperties {
     @NotBlank
     String key;
 
+    @Getter
     @NotNull
     Duration accessTokenExpiration = Duration.ofMinutes(15);
 
+    @Getter
     @NotNull
     Duration refreshTokenExpiration = Duration.ofDays(7);
 

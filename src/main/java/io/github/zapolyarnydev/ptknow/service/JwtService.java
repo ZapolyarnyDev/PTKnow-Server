@@ -13,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -82,6 +83,15 @@ public class JwtService {
         return generateTokenPair(entity.getUser());
     }
 
+    public ResponseCookie tokenToCookie(String cookiePath, String refreshToken) {
+        return ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true)
+                .maxAge(properties.getRefreshTokenExpiration())
+                .sameSite("Strict")
+                .path(cookiePath)
+                .build();
+    }
+
     public boolean isValid(String token) {
         var entity = findToken(token);
 
@@ -92,6 +102,17 @@ public class JwtService {
     public void invalidate(RefreshTokenEntity token) {
         token.setValid(false);
         log.info("Токен {} инвалидирован. ID: {}", token.getToken(), token.getId());
+    }
+
+    @Transactional
+    public void invalidateUserTokens(UserEntity user) {
+        var tokens = tokenRepository.findAllByUserAndValidIsTrueAndExpireDateAfter(user, Instant.now());
+
+        for (var token : tokens) {
+            token.setValid(false);
+        }
+
+        tokenRepository.saveAll(tokens);
     }
 
     private RefreshTokenEntity findToken(String token) {
