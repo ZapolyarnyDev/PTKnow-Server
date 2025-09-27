@@ -1,5 +1,6 @@
-package io.github.zapolyarnydev.ptknow.api.v0;
+package io.github.zapolyarnydev.ptknow.api.v0.auth;
 
+import io.github.zapolyarnydev.ptknow.api.v0.ApiResponse;
 import io.github.zapolyarnydev.ptknow.dto.LoginDTO;
 import io.github.zapolyarnydev.ptknow.dto.RegistrationDTO;
 import io.github.zapolyarnydev.ptknow.entity.user.UserEntity;
