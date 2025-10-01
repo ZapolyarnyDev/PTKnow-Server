@@ -35,7 +35,8 @@ public class RefreshTokenEntity {
 
     @Column(nullable = false)
     @Setter
-    boolean isValid = true;
+    @Builder.Default
+    boolean valid = true;
 
 
     @PrePersist
