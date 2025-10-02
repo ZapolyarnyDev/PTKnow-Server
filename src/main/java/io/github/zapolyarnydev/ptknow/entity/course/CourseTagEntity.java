@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Entity
 @Table(name = "tags")
 @Getter
@@ -21,6 +23,9 @@ public class CourseTagEntity {
 
     @Column(unique = true, nullable = false, updatable = false)
     String tagName;
+
+    @ManyToMany(mappedBy = "courseTags")
+    List<CourseEntity> courses;
 
     public CourseTagEntity(String tagName) {
         this.tagName = tagName;
