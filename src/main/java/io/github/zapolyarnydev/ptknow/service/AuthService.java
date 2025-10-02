@@ -6,7 +6,7 @@ import io.github.zapolyarnydev.ptknow.entity.user.UserEntity;
 import io.github.zapolyarnydev.ptknow.exception.email.EmailAlreadyUsedException;
 import io.github.zapolyarnydev.ptknow.exception.email.EmailNotFoundException;
 import io.github.zapolyarnydev.ptknow.exception.credentials.InvalidCredentialsException;
-import io.github.zapolyarnydev.ptknow.repository.UserRepository;
+import io.github.zapolyarnydev.ptknow.repository.auth.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

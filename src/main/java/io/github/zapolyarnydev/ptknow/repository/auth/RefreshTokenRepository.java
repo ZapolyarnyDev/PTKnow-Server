@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.ptknow.repository;
+package io.github.zapolyarnydev.ptknow.repository.auth;
 
 import io.github.zapolyarnydev.ptknow.entity.token.RefreshTokenEntity;
 import io.github.zapolyarnydev.ptknow.entity.user.UserEntity;

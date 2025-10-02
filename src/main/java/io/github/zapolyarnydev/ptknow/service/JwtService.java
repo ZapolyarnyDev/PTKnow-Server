@@ -8,7 +8,7 @@ import io.github.zapolyarnydev.ptknow.entity.user.UserEntity;
 import io.github.zapolyarnydev.ptknow.jwt.ClaimType;
 import io.github.zapolyarnydev.ptknow.jwt.JwtClaim;
 import io.github.zapolyarnydev.ptknow.properties.JwtProperties;
-import io.github.zapolyarnydev.ptknow.repository.RefreshTokenRepository;
+import io.github.zapolyarnydev.ptknow.repository.auth.RefreshTokenRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
