@@ -1,6 +1,6 @@
 package io.github.zapolyarnydev.ptknow.repository.course;
 
-import io.github.zapolyarnydev.ptknow.entity.tag.CourseTagEntity;
+import io.github.zapolyarnydev.ptknow.entity.course.CourseTagEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
