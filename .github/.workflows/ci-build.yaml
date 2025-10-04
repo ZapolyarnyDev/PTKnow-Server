@@ -1,0 +1,63 @@
+name: Сборка бекенд части сайта
+
+on:
+  workflow_dispatch:
+    branches:
+      - main
+      - develop
+    inputs:
+      version:
+        description: Версия образа
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Проверка репозитория
+        uses: actions/checkout@v4
+
+      - name: Установка JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Версионирование образа
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          if [ -z "$VERSION" ]; then
+            VERSION=latest
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Кеширование Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Добавляем право на выполнение Gradle
+        run: chmod +x ./gradlew
+
+      - name: Вход в Docker
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Сборка и публикация образа
+        run: |
+          docker build \
+            --build-arg EXPOSE_PORT=8080 \
+            -t  ${{ secrets.DOCKERHUB_USERNAME }}/site-backend:${VERSION} \
+            -t  ${{ secrets.DOCKERHUB_USERNAME }}/site-backend:${{ github.sha }} \
+            .
+          
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/site-backend:${VERSION}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/site-backend:${{ github.sha }}
