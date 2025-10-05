@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.ptknow.service;
+package io.github.zapolyarnydev.ptknow.service.auth;
 
 import io.github.zapolyarnydev.ptknow.dto.LoginDTO;
 import io.github.zapolyarnydev.ptknow.dto.RegistrationDTO;

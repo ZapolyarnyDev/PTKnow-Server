@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.ptknow.service;
+package io.github.zapolyarnydev.ptknow.service.auth;
 
 import io.github.zapolyarnydev.ptknow.entity.token.RefreshTokenEntity;
 import io.github.zapolyarnydev.ptknow.exception.token.InvalidTokenException;

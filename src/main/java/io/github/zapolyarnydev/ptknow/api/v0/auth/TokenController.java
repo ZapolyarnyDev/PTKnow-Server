@@ -2,7 +2,7 @@ package io.github.zapolyarnydev.ptknow.api.v0.auth;
 
 import io.github.zapolyarnydev.ptknow.api.v0.ApiResponse;
 import io.github.zapolyarnydev.ptknow.jwt.JwtTokens;
-import io.github.zapolyarnydev.ptknow.service.JwtService;
+import io.github.zapolyarnydev.ptknow.service.auth.JwtService;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
