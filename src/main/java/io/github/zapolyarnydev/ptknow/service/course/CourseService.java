@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,11 +48,11 @@ public class CourseService implements HandleService<CourseEntity> {
     }
 
     @Transactional
-    public List<CourseTagEntity> courseTagsFromNames(List<String> names) {
+    public Set<CourseTagEntity> courseTagsFromNames(Set<String> names) {
         return names.stream()
                 .map(name -> courseTagRepository.findByName(name)
                         .orElseGet(() -> createCourseTag(name)))
-                .toList();
+                .collect(Collectors.toSet());
     }
 
     @Transactional
@@ -68,7 +70,7 @@ public class CourseService implements HandleService<CourseEntity> {
     public void deleteCourseById(Long courseId) {
         var course = findCourseById(courseId);
 
-        List<CourseTagEntity> tags = course.getCourseTags();
+        Set<CourseTagEntity> tags = course.getCourseTags();
         courseRepository.delete(course);
 
         for (CourseTagEntity tag : tags) {

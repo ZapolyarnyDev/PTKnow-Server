@@ -1,9 +1,9 @@
 package io.github.zapolyarnydev.ptknow.dto.course;
 
-import java.util.List;
+import java.util.Set;
 
 public record CreateCourseDTO(
         String name,
         String description,
-        List<String> tags
+        Set<String> tags
 ) { }

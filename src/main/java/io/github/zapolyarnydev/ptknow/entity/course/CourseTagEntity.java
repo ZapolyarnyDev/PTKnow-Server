@@ -3,6 +3,7 @@ package io.github.zapolyarnydev.ptknow.entity.course;
 import io.github.zapolyarnydev.ptknow.exception.credentials.InvalidCredentialsException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -14,11 +15,13 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class CourseTagEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_tag_id_generator")
     @SequenceGenerator(name = "course_tag_id_generator", sequenceName = "course_tag_sequence", allocationSize = 1)
+    @EqualsAndHashCode.Include
     Long id;
 
     @Column(unique = true, nullable = false, updatable = false)
