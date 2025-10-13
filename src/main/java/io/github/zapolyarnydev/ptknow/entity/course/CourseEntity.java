@@ -27,6 +27,9 @@ public class CourseEntity {
 
     String description;
 
+    @Column(unique = true, nullable = false)
+    String handle;
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "course_tags_mapping",
@@ -36,10 +39,11 @@ public class CourseEntity {
     List<CourseTagEntity> courseTags;
 
     @Builder
-    public CourseEntity(List<CourseTagEntity> courseTags, String name, String description) {
+    public CourseEntity(List<CourseTagEntity> courseTags, String name, String description, String handle) {
         this.courseTags = courseTags;
         this.name = name;
         this.description = description;
+        this.handle = handle;
     }
 
     @PrePersist

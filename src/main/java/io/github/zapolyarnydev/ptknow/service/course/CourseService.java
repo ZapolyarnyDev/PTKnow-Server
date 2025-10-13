@@ -6,8 +6,10 @@ import io.github.zapolyarnydev.ptknow.entity.course.CourseTagEntity;
 import io.github.zapolyarnydev.ptknow.exception.course.CourseAlreadyExists;
 import io.github.zapolyarnydev.ptknow.exception.course.CourseNotFoundException;
 import io.github.zapolyarnydev.ptknow.exception.course.CourseTagAlreadyExists;
+import io.github.zapolyarnydev.ptknow.generator.handle.HandleGenerator;
 import io.github.zapolyarnydev.ptknow.repository.course.CourseRepository;
 import io.github.zapolyarnydev.ptknow.repository.course.CourseTagRepository;
+import io.github.zapolyarnydev.ptknow.service.HandleService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,19 +21,23 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class CourseService {
+public class CourseService implements HandleService<CourseEntity> {
     CourseRepository courseRepository;
     CourseTagRepository courseTagRepository;
+    HandleGenerator handleGenerator;
 
     @Transactional
     public CourseEntity publishCourse(CreateCourseDTO dto) {
         if(courseRepository.existsByName(dto.name()))
             throw new CourseAlreadyExists(dto.name());
 
+        String handle = handleGenerator.generate(courseRepository::existsByHandle);
+
         var entity = CourseEntity.builder()
                 .name(dto.name())
                 .description(dto.description())
                 .courseTags(courseTagsFromNames(dto.tags()))
+                .handle(handle)
                 .build();
 
         courseRepository.save(entity);
@@ -83,4 +89,9 @@ public class CourseService {
         return courseRepository.findAll();
     }
 
+    @Override
+    public CourseEntity getByHandle(String handle) {
+        return courseRepository.findByHandle(handle)
+                .orElseThrow(() -> new CourseNotFoundException(handle));
+    }
 }
