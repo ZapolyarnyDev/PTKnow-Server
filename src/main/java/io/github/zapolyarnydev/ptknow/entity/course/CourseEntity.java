@@ -47,6 +47,7 @@ public class CourseEntity {
     }
 
     @PrePersist
+    @PreUpdate
     public void checkCourseName() {
         if(name == null || name.isBlank())
             throw new InvalidCredentialsException("Course name can't be null or blank");

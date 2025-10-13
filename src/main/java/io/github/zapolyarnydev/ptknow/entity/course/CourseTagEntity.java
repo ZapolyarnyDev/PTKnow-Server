@@ -32,6 +32,7 @@ public class CourseTagEntity {
     }
 
     @PrePersist
+    @PreUpdate
     public void checkTagName() {
         if(tagName == null || tagName.isBlank())
             throw new InvalidCredentialsException("Course tag name can't be null or blank");
