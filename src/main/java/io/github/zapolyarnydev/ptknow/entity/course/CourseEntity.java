@@ -1,5 +1,6 @@
 package io.github.zapolyarnydev.ptknow.entity.course;
 
+import io.github.zapolyarnydev.ptknow.entity.lesson.LessonEntity;
 import io.github.zapolyarnydev.ptknow.exception.credentials.InvalidCredentialsException;
 import jakarta.persistence.*;
 import lombok.*;
@@ -37,6 +38,9 @@ public class CourseEntity {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     Set<CourseTagEntity> courseTags;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    Set<LessonEntity> lessons;
 
     @Builder
     public CourseEntity(Set<CourseTagEntity> courseTags, String name, String description, String handle) {
