@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.ptknow.api.v0.auth;
+package io.github.zapolyarnydev.ptknow.api.v0.user;
 
 import io.github.zapolyarnydev.ptknow.api.v0.ApiResponse;
 import io.github.zapolyarnydev.ptknow.jwt.JwtTokens;

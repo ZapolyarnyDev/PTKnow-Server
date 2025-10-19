@@ -1,7 +1,7 @@
 package io.github.zapolyarnydev.ptknow.service.user;
 
-import io.github.zapolyarnydev.ptknow.dto.LoginDTO;
-import io.github.zapolyarnydev.ptknow.dto.RegistrationDTO;
+import io.github.zapolyarnydev.ptknow.dto.auth.LoginDTO;
+import io.github.zapolyarnydev.ptknow.dto.auth.RegistrationDTO;
 import io.github.zapolyarnydev.ptknow.entity.user.UserEntity;
 import io.github.zapolyarnydev.ptknow.exception.email.EmailAlreadyUsedException;
 import io.github.zapolyarnydev.ptknow.exception.email.EmailNotFoundException;
