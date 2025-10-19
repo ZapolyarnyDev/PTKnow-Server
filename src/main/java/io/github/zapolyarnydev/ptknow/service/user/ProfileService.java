@@ -1,5 +1,6 @@
 package io.github.zapolyarnydev.ptknow.service.user;
 
+import io.github.zapolyarnydev.ptknow.dto.profile.ProfileUpdateDTO;
 import io.github.zapolyarnydev.ptknow.entity.file.FileEntity;
 import io.github.zapolyarnydev.ptknow.entity.user.ProfileEntity;
 import io.github.zapolyarnydev.ptknow.entity.user.UserEntity;
@@ -36,22 +37,26 @@ public class ProfileService implements HandleService<ProfileEntity> {
                 .user(user)
                 .build();
 
-        repository.save(entity);
-        return entity;
+        return repository.save(entity);
     }
 
     @Transactional
-    public ProfileEntity updateSummary(UUID userId, String summary) {
+    public ProfileEntity update(UUID userId, ProfileUpdateDTO dto) {
         ProfileEntity profile = repository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Profile not found"));
-        profile.setSummary(summary);
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        if (dto.fullName() != null)
+            profile.setFullName(dto.fullName());
+        if (dto.summary() != null)
+            profile.setSummary(dto.summary());
+        if (dto.handle() != null)
+            profile.setHandle(dto.handle());
+
         return repository.save(profile);
     }
 
     @Transactional
     public ProfileEntity updateAvatar(UUID userId, MultipartFile file) throws IOException {
-        ProfileEntity profile = repository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Profile not found"));
+        ProfileEntity profile = getProfile(userId);
 
         FileEntity savedFile = fileService.saveFile(file);
         profile.setAvatar(savedFile);
@@ -59,9 +64,16 @@ public class ProfileService implements HandleService<ProfileEntity> {
         return repository.save(profile);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public ProfileEntity getByHandle(String handle) {
         return repository.findByHandle(handle)
                 .orElseThrow(() -> new UserNotFoundException(handle));
+    }
+
+    @Transactional(readOnly = true)
+    public ProfileEntity getProfile(UUID userId) {
+        return repository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
     }
 }
