@@ -25,6 +25,7 @@ public class AuthService implements UserDetailsService {
 
     UserRepository repository;
     PasswordEncoder passwordEncoder;
+    ProfileService profileService;
 
     @Transactional
     public UserEntity register(String fullName, String email, String password) {
@@ -40,6 +41,7 @@ public class AuthService implements UserDetailsService {
                 .build();
 
         repository.save(entity);
+        profileService.createProfile(entity);
         log.info("User registered successfully. Full name: {}; Email: {}", fullName, email);
         return entity;
     }

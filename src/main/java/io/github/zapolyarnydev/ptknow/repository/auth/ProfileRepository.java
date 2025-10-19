@@ -10,5 +10,6 @@ import java.util.UUID;
 @Repository
 public interface ProfileRepository extends JpaRepository<ProfileEntity, UUID> {
     Optional<ProfileEntity> findByHandle(String handle);
+    Optional<ProfileEntity> findByUserId(UUID userId);
     boolean existsByHandle(String handle);
 }
