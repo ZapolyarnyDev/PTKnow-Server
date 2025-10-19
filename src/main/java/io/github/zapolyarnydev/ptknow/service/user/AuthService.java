@@ -35,13 +35,12 @@ public class AuthService implements UserDetailsService {
         String hashedPassword = passwordEncoder.encode(password);
 
         var entity = UserEntity.builder()
-                .fullName(fullName)
                 .email(email)
                 .password(hashedPassword)
                 .build();
 
         repository.save(entity);
-        profileService.createProfile(entity);
+        profileService.createProfile(fullName, entity);
         log.info("User registered successfully. Full name: {}; Email: {}", fullName, email);
         return entity;
     }

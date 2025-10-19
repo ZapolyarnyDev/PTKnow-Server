@@ -21,6 +21,9 @@ public class ProfileEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID id;
 
+    @Column(nullable = false)
+    String fullName;
+
     @OneToOne
     @JoinColumn(name = "user_id", updatable = false, unique = true)
     UserEntity user;

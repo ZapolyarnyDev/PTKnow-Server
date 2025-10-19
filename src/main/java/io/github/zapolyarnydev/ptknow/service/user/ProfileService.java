@@ -28,9 +28,10 @@ public class ProfileService implements HandleService<ProfileEntity> {
     HandleGenerator handleGenerator;
 
     @Transactional
-    public ProfileEntity createProfile(UserEntity user) {
+    public ProfileEntity createProfile(String fullName, UserEntity user) {
         String handle = handleGenerator.generate(repository::existsByHandle);
         var entity = ProfileEntity.builder()
+                .fullName(fullName)
                 .handle(handle)
                 .user(user)
                 .build();
