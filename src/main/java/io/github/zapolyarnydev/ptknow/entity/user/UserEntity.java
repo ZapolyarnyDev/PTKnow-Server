@@ -22,7 +22,6 @@ public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", updatable = false, unique = true, nullable = false)
     UUID id;
 
     @Column(nullable = false)

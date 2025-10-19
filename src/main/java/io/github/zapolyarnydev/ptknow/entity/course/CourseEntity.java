@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -42,12 +41,17 @@ public class CourseEntity {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     Set<LessonEntity> lessons;
 
+    @Setter
+    @Column(nullable = false)
+    int maxUsersAmount = 10;
+
     @Builder
-    public CourseEntity(Set<CourseTagEntity> courseTags, String name, String description, String handle) {
+    public CourseEntity(Set<CourseTagEntity> courseTags, String name, String description, String handle, int maxUsersAmount) {
         this.courseTags = courseTags;
         this.name = name;
         this.description = description;
         this.handle = handle;
+        this.maxUsersAmount = maxUsersAmount;
     }
 
     @PrePersist
@@ -57,5 +61,7 @@ public class CourseEntity {
             throw new InvalidCredentialsException("Course name can't be null or blank");
         if (handle == null || handle.isBlank())
             throw new InvalidCredentialsException("Course handle can't be null or blank");
+        if(maxUsersAmount <= 0)
+            throw new InvalidCredentialsException("Course must be open to at least 1 person");
     }
 }
