@@ -1,8 +1,8 @@
 package io.github.zapolyarnydev.ptknow.filter;
 
 import io.github.zapolyarnydev.ptknow.entity.user.UserEntity;
-import io.github.zapolyarnydev.ptknow.service.auth.AuthService;
-import io.github.zapolyarnydev.ptknow.service.auth.JwtService;
+import io.github.zapolyarnydev.ptknow.service.user.AuthService;
+import io.github.zapolyarnydev.ptknow.service.user.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

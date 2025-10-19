@@ -47,26 +47,24 @@ public class UserEntity implements UserDetails {
     @Column(updatable = false, unique = true)
     String providerId;
 
-    @Column(unique = true, nullable = false)
-    String handle;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private ProfileEntity profile;
 
     @Builder
-    public UserEntity(String fullName, String email, String password, Role role, String handle) {
+    public UserEntity(String fullName, String email, String password, Role role) {
         this.fullName = fullName;
         this.email = email;
         this.password = password;
         this.role = role;
         this.authProvider = AuthProvider.LOCAL;
-        this.handle = handle;
     }
 
     @Builder(builderMethodName = "provideVK")
-    public UserEntity(String fullName, String providerId, Role role, String handle) {
+    public UserEntity(String fullName, String providerId, Role role) {
         this.fullName = fullName;
         this.role = role;
         this.authProvider = AuthProvider.VK;
         this.providerId = providerId;
-        this.handle = handle;
     }
 
     @PrePersist

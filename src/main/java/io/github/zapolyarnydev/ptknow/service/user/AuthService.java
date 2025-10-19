@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.ptknow.service.auth;
+package io.github.zapolyarnydev.ptknow.service.user;
 
 import io.github.zapolyarnydev.ptknow.dto.LoginDTO;
 import io.github.zapolyarnydev.ptknow.dto.RegistrationDTO;
@@ -6,10 +6,7 @@ import io.github.zapolyarnydev.ptknow.entity.user.UserEntity;
 import io.github.zapolyarnydev.ptknow.exception.email.EmailAlreadyUsedException;
 import io.github.zapolyarnydev.ptknow.exception.email.EmailNotFoundException;
 import io.github.zapolyarnydev.ptknow.exception.credentials.InvalidCredentialsException;
-import io.github.zapolyarnydev.ptknow.exception.user.UserNotFoundException;
-import io.github.zapolyarnydev.ptknow.generator.handle.HandleGenerator;
 import io.github.zapolyarnydev.ptknow.repository.auth.UserRepository;
-import io.github.zapolyarnydev.ptknow.service.HandleService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -24,11 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class AuthService implements UserDetailsService, HandleService<UserEntity> {
+public class AuthService implements UserDetailsService {
 
     UserRepository repository;
     PasswordEncoder passwordEncoder;
-    HandleGenerator handleGenerator;
 
     @Transactional
     public UserEntity register(String fullName, String email, String password) {
@@ -37,12 +33,10 @@ public class AuthService implements UserDetailsService, HandleService<UserEntity
 
         String hashedPassword = passwordEncoder.encode(password);
 
-        String handle = handleGenerator.generate(repository::existsByHandle);
         var entity = UserEntity.builder()
                 .fullName(fullName)
                 .email(email)
                 .password(hashedPassword)
-                .handle(handle)
                 .build();
 
         repository.save(entity);
@@ -77,9 +71,4 @@ public class AuthService implements UserDetailsService, HandleService<UserEntity
                 .orElseThrow(() -> new EmailNotFoundException(username));
     }
 
-    @Override
-    public UserEntity getByHandle(String handle) {
-        return repository.findByHandle(handle)
-                .orElseThrow(() -> new UserNotFoundException(handle));
-    }
 }
