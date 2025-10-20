@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.ptknow.mapper;
+package io.github.zapolyarnydev.ptknow.mapper.user;
 
 import io.github.zapolyarnydev.ptknow.dto.profile.ProfileResponseDTO;
 import io.github.zapolyarnydev.ptknow.entity.user.ProfileEntity;

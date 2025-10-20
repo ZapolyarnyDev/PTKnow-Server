@@ -4,7 +4,7 @@ import io.github.zapolyarnydev.ptknow.api.v0.ApiResponse;
 import io.github.zapolyarnydev.ptknow.dto.course.CourseDTO;
 import io.github.zapolyarnydev.ptknow.dto.course.CreateCourseDTO;
 import io.github.zapolyarnydev.ptknow.entity.course.CourseEntity;
-import io.github.zapolyarnydev.ptknow.mapper.CourseMapper;
+import io.github.zapolyarnydev.ptknow.mapper.course.CourseMapper;
 import io.github.zapolyarnydev.ptknow.service.course.CourseService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

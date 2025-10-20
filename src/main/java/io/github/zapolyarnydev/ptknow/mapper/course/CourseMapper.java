@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.ptknow.mapper;
+package io.github.zapolyarnydev.ptknow.mapper.course;
 
 import io.github.zapolyarnydev.ptknow.dto.course.CourseDTO;
 import io.github.zapolyarnydev.ptknow.entity.course.CourseEntity;

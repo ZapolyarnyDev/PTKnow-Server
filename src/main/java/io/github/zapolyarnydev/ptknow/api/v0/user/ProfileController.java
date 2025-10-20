@@ -5,7 +5,7 @@ import io.github.zapolyarnydev.ptknow.dto.profile.ProfileResponseDTO;
 import io.github.zapolyarnydev.ptknow.dto.profile.ProfileUpdateDTO;
 import io.github.zapolyarnydev.ptknow.entity.user.ProfileEntity;
 import io.github.zapolyarnydev.ptknow.entity.user.UserEntity;
-import io.github.zapolyarnydev.ptknow.mapper.ProfileMapper;
+import io.github.zapolyarnydev.ptknow.mapper.user.ProfileMapper;
 import io.github.zapolyarnydev.ptknow.service.user.ProfileService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
