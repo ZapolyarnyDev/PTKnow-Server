@@ -41,13 +41,13 @@ public class CourseController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<ApiResponse<CourseDTO>> getCourse(@PathVariable Long id) {
         CourseDTO course = courseMapper.courseToDTO(courseService.findCourseById(id));
         return ResponseEntity.ok(ApiResponse.success(null, course));
     }
 
-    @GetMapping("/{handle}")
+    @GetMapping("/handle/{handle}")
     public ResponseEntity<ApiResponse<CourseDTO>> getCourse(@PathVariable String handle) {
         CourseDTO course = courseMapper.courseToDTO(courseService.getByHandle(handle));
         return ResponseEntity.ok(ApiResponse.success(null, course));
