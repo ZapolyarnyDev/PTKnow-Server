@@ -48,6 +48,18 @@ public class FileService {
         return Files.readAllBytes(path);
     }
 
+    public void deleteFile(UUID id) throws IOException {
+        FileEntity fileEntity = fileRepository.findById(id)
+                .orElseThrow(() -> new FileNotFoundException("File not found"));
+
+        Path path = Paths.get(fileEntity.getStoragePath());
+        if (Files.exists(path)) {
+            Files.delete(path);
+        }
+
+        fileRepository.delete(fileEntity);
+    }
+
     public String getContentType(UUID id) {
         FileEntity fileEntity = fileRepository.findById(id)
                 .orElseThrow(() -> new FileNotFoundException("File not found"));
