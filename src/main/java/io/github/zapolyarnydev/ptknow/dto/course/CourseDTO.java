@@ -7,6 +7,7 @@ public record CourseDTO(
         String name,
         String description,
         List<String> tags,
-        String handle
+        String handle,
+        String previewUrl
 ) { }
 

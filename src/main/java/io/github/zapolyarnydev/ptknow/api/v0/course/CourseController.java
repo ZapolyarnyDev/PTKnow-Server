@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -32,8 +34,11 @@ public class CourseController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<CourseDTO>> createCourse(@RequestBody CreateCourseDTO dto) {
-        CourseEntity course = courseService.publishCourse(dto);
+    public ResponseEntity<ApiResponse<CourseDTO>> createCourse(
+            @RequestPart("course") CreateCourseDTO dto,
+            @RequestPart(value = "preview", required = false) MultipartFile preview
+    ) throws IOException {
+        CourseEntity course = courseService.publishCourse(dto, preview);
 
         String message = String.format("Курс %s успешно опубликован", course.getName());
         var response = ApiResponse.success(message, courseMapper.courseToDTO(course));
@@ -51,6 +56,16 @@ public class CourseController {
     public ResponseEntity<ApiResponse<CourseDTO>> getCourse(@PathVariable String handle) {
         CourseDTO course = courseMapper.courseToDTO(courseService.getByHandle(handle));
         return ResponseEntity.ok(ApiResponse.success(null, course));
+    }
+
+    @PostMapping("/{id}/preview")
+    public ResponseEntity<ApiResponse<CourseDTO>> updatePreview(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file
+    ) throws IOException {
+        var updatedProfile = courseService.updatePreview(id, file);
+        var dto = courseMapper.courseToDTO(updatedProfile);
+        return ResponseEntity.ok(ApiResponse.success("Фото курса обновлено", dto));
     }
 
     @DeleteMapping("/{id}")

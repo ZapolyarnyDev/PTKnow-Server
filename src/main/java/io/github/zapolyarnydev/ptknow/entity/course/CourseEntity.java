@@ -1,5 +1,6 @@
 package io.github.zapolyarnydev.ptknow.entity.course;
 
+import io.github.zapolyarnydev.ptknow.entity.file.FileEntity;
 import io.github.zapolyarnydev.ptknow.entity.lesson.LessonEntity;
 import io.github.zapolyarnydev.ptknow.exception.credentials.InvalidCredentialsException;
 import jakarta.persistence.*;
@@ -12,6 +13,8 @@ import java.util.Set;
 @Table(name = "courses")
 @Getter
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class CourseEntity {
@@ -45,14 +48,11 @@ public class CourseEntity {
     @Column(nullable = false)
     int maxUsersAmount = 10;
 
-    @Builder
-    public CourseEntity(Set<CourseTagEntity> courseTags, String name, String description, String handle, int maxUsersAmount) {
-        this.courseTags = courseTags;
-        this.name = name;
-        this.description = description;
-        this.handle = handle;
-        this.maxUsersAmount = maxUsersAmount;
-    }
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "preview_id")
+    @Getter
+    @Setter
+    FileEntity preview;
 
     @PrePersist
     @PreUpdate
