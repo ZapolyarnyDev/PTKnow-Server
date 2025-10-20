@@ -6,6 +6,7 @@ public record CourseDTO(
         Long id,
         String name,
         String description,
-        List<String> tags
+        List<String> tags,
+        String handle
 ) { }
 

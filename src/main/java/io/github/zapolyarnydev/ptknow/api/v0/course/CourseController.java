@@ -47,6 +47,12 @@ public class CourseController {
         return ResponseEntity.ok(ApiResponse.success(null, course));
     }
 
+    @GetMapping("/{handle}")
+    public ResponseEntity<ApiResponse<CourseDTO>> getCourse(@PathVariable String handle) {
+        CourseDTO course = courseMapper.courseToDTO(courseService.getByHandle(handle));
+        return ResponseEntity.ok(ApiResponse.success(null, course));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteCourse(@PathVariable Long id) {
         courseService.deleteCourseById(id);
