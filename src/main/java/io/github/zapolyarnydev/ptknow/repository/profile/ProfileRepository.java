@@ -1,6 +1,6 @@
-package io.github.zapolyarnydev.ptknow.repository.auth;
+package io.github.zapolyarnydev.ptknow.repository.profile;
 
-import io.github.zapolyarnydev.ptknow.entity.user.ProfileEntity;
+import io.github.zapolyarnydev.ptknow.entity.profile.ProfileEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

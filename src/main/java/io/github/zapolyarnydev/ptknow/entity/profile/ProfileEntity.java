@@ -1,6 +1,7 @@
-package io.github.zapolyarnydev.ptknow.entity.user;
+package io.github.zapolyarnydev.ptknow.entity.profile;
 
 import io.github.zapolyarnydev.ptknow.entity.file.FileEntity;
+import io.github.zapolyarnydev.ptknow.entity.auth.AuthEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -26,7 +27,7 @@ public class ProfileEntity {
 
     @OneToOne
     @JoinColumn(name = "user_id", updatable = false, unique = true)
-    UserEntity user;
+    AuthEntity user;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "avatar_id")

@@ -1,10 +1,10 @@
-package io.github.zapolyarnydev.ptknow.service.user;
+package io.github.zapolyarnydev.ptknow.service.auth;
 
 import io.github.zapolyarnydev.ptknow.entity.token.RefreshTokenEntity;
 import io.github.zapolyarnydev.ptknow.exception.token.InvalidTokenException;
 import io.github.zapolyarnydev.ptknow.exception.token.TokenNotFoundException;
 import io.github.zapolyarnydev.ptknow.jwt.JwtTokens;
-import io.github.zapolyarnydev.ptknow.entity.user.UserEntity;
+import io.github.zapolyarnydev.ptknow.entity.auth.AuthEntity;
 import io.github.zapolyarnydev.ptknow.jwt.ClaimType;
 import io.github.zapolyarnydev.ptknow.jwt.JwtClaim;
 import io.github.zapolyarnydev.ptknow.properties.JwtProperties;
@@ -32,7 +32,7 @@ public class JwtService {
     JwtEncoder jwtEncoder;
     RefreshTokenRepository tokenRepository;
 
-    private String generateAccessToken(UserEntity user) {
+    private String generateAccessToken(AuthEntity user) {
         var now = Instant.now();
         var claimSet = JwtClaimsSet.builder()
                 .issuer(properties.getIssuer())
@@ -45,7 +45,7 @@ public class JwtService {
         return jwtEncoder.encode(JwtEncoderParameters.from(claimSet)).getTokenValue();
     }
 
-    private String generateRefreshToken(UserEntity user) {
+    private String generateRefreshToken(AuthEntity user) {
         var now = Instant.now();
         Instant expiresAt = properties.getRefreshTokenExpiryInstant();
 
@@ -69,7 +69,7 @@ public class JwtService {
         return token;
     }
 
-    public JwtTokens generateTokenPair(UserEntity entity) {
+    public JwtTokens generateTokenPair(AuthEntity entity) {
         return new JwtTokens(generateAccessToken(entity), generateRefreshToken(entity));
     }
 
@@ -105,7 +105,7 @@ public class JwtService {
     }
 
     @Transactional
-    public void invalidateUserTokens(UserEntity user) {
+    public void invalidateUserTokens(AuthEntity user) {
         var tokens = tokenRepository.findAllByUserAndValidIsTrueAndExpireDateAfter(user, Instant.now());
 
         for (var token : tokens) {

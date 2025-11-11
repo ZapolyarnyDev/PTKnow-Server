@@ -1,5 +1,6 @@
-package io.github.zapolyarnydev.ptknow.entity.user;
+package io.github.zapolyarnydev.ptknow.entity.auth;
 
+import io.github.zapolyarnydev.ptknow.entity.profile.ProfileEntity;
 import io.github.zapolyarnydev.ptknow.exception.credentials.InvalidCredentialsException;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserEntity implements UserDetails {
+public class AuthEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -48,7 +49,7 @@ public class UserEntity implements UserDetails {
     private ProfileEntity profile;
 
     @Builder
-    public UserEntity(String email, String password, Role role) {
+    public AuthEntity(String email, String password, Role role) {
         this.email = email;
         this.password = password;
         this.role = role;
@@ -56,7 +57,7 @@ public class UserEntity implements UserDetails {
     }
 
     @Builder(builderMethodName = "provideVK")
-    public UserEntity(String providerId, Role role) {
+    public AuthEntity(String providerId, Role role) {
         this.role = role;
         this.authProvider = AuthProvider.VK;
         this.providerId = providerId;

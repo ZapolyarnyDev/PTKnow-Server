@@ -1,7 +1,7 @@
 package io.github.zapolyarnydev.ptknow.repository.auth;
 
 import io.github.zapolyarnydev.ptknow.entity.token.RefreshTokenEntity;
-import io.github.zapolyarnydev.ptknow.entity.user.UserEntity;
+import io.github.zapolyarnydev.ptknow.entity.auth.AuthEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +14,6 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshTokenEntity
 
     Optional<RefreshTokenEntity> findByToken(String token);
 
-    List<RefreshTokenEntity> findAllByUserAndValidIsTrueAndExpireDateAfter(UserEntity user, Instant now);
+    List<RefreshTokenEntity> findAllByUserAndValidIsTrueAndExpireDateAfter(AuthEntity user, Instant now);
 
 }

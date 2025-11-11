@@ -1,7 +1,7 @@
-package io.github.zapolyarnydev.ptknow.mapper.user;
+package io.github.zapolyarnydev.ptknow.mapper.profile;
 
 import io.github.zapolyarnydev.ptknow.dto.profile.ProfileResponseDTO;
-import io.github.zapolyarnydev.ptknow.entity.user.ProfileEntity;
+import io.github.zapolyarnydev.ptknow.entity.profile.ProfileEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

@@ -1,12 +1,12 @@
-package io.github.zapolyarnydev.ptknow.api.v0.user;
+package io.github.zapolyarnydev.ptknow.api.v0.profile;
 
 import io.github.zapolyarnydev.ptknow.api.v0.ApiResponse;
 import io.github.zapolyarnydev.ptknow.dto.profile.ProfileResponseDTO;
 import io.github.zapolyarnydev.ptknow.dto.profile.ProfileUpdateDTO;
-import io.github.zapolyarnydev.ptknow.entity.user.ProfileEntity;
-import io.github.zapolyarnydev.ptknow.entity.user.UserEntity;
-import io.github.zapolyarnydev.ptknow.mapper.user.ProfileMapper;
-import io.github.zapolyarnydev.ptknow.service.user.ProfileService;
+import io.github.zapolyarnydev.ptknow.entity.profile.ProfileEntity;
+import io.github.zapolyarnydev.ptknow.entity.auth.AuthEntity;
+import io.github.zapolyarnydev.ptknow.mapper.profile.ProfileMapper;
+import io.github.zapolyarnydev.ptknow.service.profile.ProfileService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -27,7 +27,7 @@ public class ProfileController {
     ProfileMapper profileMapper;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<ProfileResponseDTO>> getMyProfile(@AuthenticationPrincipal UserEntity user) {
+    public ResponseEntity<ApiResponse<ProfileResponseDTO>> getMyProfile(@AuthenticationPrincipal AuthEntity user) {
         var profile = profileService.getProfile(user.getId());
         var dto = profileMapper.toDto(profile);
         return ResponseEntity.ok(ApiResponse.success("Информация о профиле успешно получена!", dto));
@@ -42,7 +42,7 @@ public class ProfileController {
 
     @PostMapping("/avatar")
     public ResponseEntity<ApiResponse<ProfileResponseDTO>> updateAvatar(
-            @AuthenticationPrincipal UserEntity user,
+            @AuthenticationPrincipal AuthEntity user,
             @RequestParam("file") MultipartFile file
     ) throws IOException {
         var updatedProfile = profileService.updateAvatar(user.getId(), file);
@@ -52,7 +52,7 @@ public class ProfileController {
 
     @PutMapping
     public ResponseEntity<ApiResponse<ProfileEntity>> updateMyProfile(
-            @AuthenticationPrincipal UserEntity user,
+            @AuthenticationPrincipal AuthEntity user,
             @RequestBody ProfileUpdateDTO dto
     ) {
         var updated = profileService.update(user.getId(), dto);

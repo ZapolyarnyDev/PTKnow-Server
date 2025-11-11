@@ -1,6 +1,6 @@
 package io.github.zapolyarnydev.ptknow.entity.token;
 
-import io.github.zapolyarnydev.ptknow.entity.user.UserEntity;
+import io.github.zapolyarnydev.ptknow.entity.auth.AuthEntity;
 import io.github.zapolyarnydev.ptknow.exception.credentials.InvalidCredentialsException;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,7 +28,7 @@ public class RefreshTokenEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
-    UserEntity user;
+    AuthEntity user;
 
     @Column(nullable = false, updatable = false)
     Instant expireDate;

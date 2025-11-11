@@ -3,10 +3,10 @@ package io.github.zapolyarnydev.ptknow.api.v0.user;
 import io.github.zapolyarnydev.ptknow.api.v0.ApiResponse;
 import io.github.zapolyarnydev.ptknow.dto.auth.LoginDTO;
 import io.github.zapolyarnydev.ptknow.dto.auth.RegistrationDTO;
-import io.github.zapolyarnydev.ptknow.entity.user.UserEntity;
+import io.github.zapolyarnydev.ptknow.entity.auth.AuthEntity;
 import io.github.zapolyarnydev.ptknow.jwt.JwtTokens;
-import io.github.zapolyarnydev.ptknow.service.user.AuthService;
-import io.github.zapolyarnydev.ptknow.service.user.JwtService;
+import io.github.zapolyarnydev.ptknow.service.auth.AuthService;
+import io.github.zapolyarnydev.ptknow.service.auth.JwtService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -30,7 +30,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<String>> register(@RequestBody RegistrationDTO registrationDTO) {
-        UserEntity entity = authService.register(registrationDTO);
+        AuthEntity entity = authService.register(registrationDTO);
         JwtTokens tokens = jwtService.generateTokenPair(entity);
 
         var response = ApiResponse.success("Регистрация прошла успешно", tokens.accessToken());
@@ -43,7 +43,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginDTO loginDTO) {
-        UserEntity entity = authService.authenticate(loginDTO);
+        AuthEntity entity = authService.authenticate(loginDTO);
         JwtTokens tokens = jwtService.generateTokenPair(entity);
 
         var response = ApiResponse.success("Вход прошёл успешно", tokens.accessToken());
@@ -55,7 +55,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<Void>> logout(@AuthenticationPrincipal UserEntity user) {
+    public ResponseEntity<ApiResponse<Void>> logout(@AuthenticationPrincipal AuthEntity user) {
         jwtService.invalidateUserTokens(user);
 
         var response = ApiResponse.success("Вы успешно вышли из системы");

@@ -1,12 +1,12 @@
-package io.github.zapolyarnydev.ptknow.service.user;
+package io.github.zapolyarnydev.ptknow.service.profile;
 
 import io.github.zapolyarnydev.ptknow.dto.profile.ProfileUpdateDTO;
 import io.github.zapolyarnydev.ptknow.entity.file.FileEntity;
-import io.github.zapolyarnydev.ptknow.entity.user.ProfileEntity;
-import io.github.zapolyarnydev.ptknow.entity.user.UserEntity;
+import io.github.zapolyarnydev.ptknow.entity.profile.ProfileEntity;
+import io.github.zapolyarnydev.ptknow.entity.auth.AuthEntity;
 import io.github.zapolyarnydev.ptknow.exception.user.UserNotFoundException;
 import io.github.zapolyarnydev.ptknow.generator.handle.HandleGenerator;
-import io.github.zapolyarnydev.ptknow.repository.auth.ProfileRepository;
+import io.github.zapolyarnydev.ptknow.repository.profile.ProfileRepository;
 import io.github.zapolyarnydev.ptknow.service.HandleService;
 import io.github.zapolyarnydev.ptknow.service.file.FileService;
 import lombok.AccessLevel;
@@ -29,7 +29,7 @@ public class ProfileService implements HandleService<ProfileEntity> {
     HandleGenerator handleGenerator;
 
     @Transactional
-    public ProfileEntity createProfile(String fullName, UserEntity user) {
+    public ProfileEntity createProfile(String fullName, AuthEntity user) {
         String handle = handleGenerator.generate(repository::existsByHandle);
         var entity = ProfileEntity.builder()
                 .fullName(fullName)
