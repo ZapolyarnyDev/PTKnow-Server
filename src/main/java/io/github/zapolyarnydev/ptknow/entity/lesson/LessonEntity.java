@@ -38,17 +38,22 @@ public class LessonEntity {
     @Column(nullable = false)
     LessonState state = LessonState.PLANNED;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    LessonType type = LessonType.LECTURE;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
     CourseEntity course;
 
     @Builder
-    public LessonEntity(String name, String description, Instant beginAt, Instant endsAt, CourseEntity course) {
+    public LessonEntity(String name, String description, Instant beginAt, Instant endsAt, CourseEntity course, LessonType lessonType) {
         this.name = name;
         this.description = description;
         this.beginAt = beginAt;
         this.endsAt = endsAt;
         this.course = course;
+        this.type = lessonType;
     }
 
     @PrePersist

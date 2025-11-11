@@ -31,6 +31,7 @@ public class LessonService {
                 .beginAt(dto.beginAt())
                 .endsAt(dto.endsAt())
                 .course(course)
+                .lessonType(dto.type())
                 .build();
 
         return lessonRepository.save(entity);
