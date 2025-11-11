@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.ptknow.repository.course;
+package io.github.zapolyarnydev.ptknow.repository.lesson;
 
 import io.github.zapolyarnydev.ptknow.entity.lesson.LessonEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

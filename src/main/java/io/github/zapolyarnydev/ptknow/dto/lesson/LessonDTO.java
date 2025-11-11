@@ -1,6 +1,7 @@
-package io.github.zapolyarnydev.ptknow.dto.course;
+package io.github.zapolyarnydev.ptknow.dto.lesson;
 
 import io.github.zapolyarnydev.ptknow.entity.lesson.LessonState;
+import io.github.zapolyarnydev.ptknow.entity.lesson.LessonType;
 
 import java.time.Instant;
 
@@ -11,5 +12,6 @@ public record LessonDTO(
         Instant beginAt,
         Instant endsAt,
         LessonState state,
-        Long courseId
+        Long courseId,
+        LessonType type
 ) {}

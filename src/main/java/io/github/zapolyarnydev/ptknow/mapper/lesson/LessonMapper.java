@@ -1,6 +1,6 @@
-package io.github.zapolyarnydev.ptknow.mapper.course;
+package io.github.zapolyarnydev.ptknow.mapper.lesson;
 
-import io.github.zapolyarnydev.ptknow.dto.course.LessonDTO;
+import io.github.zapolyarnydev.ptknow.dto.lesson.LessonDTO;
 import io.github.zapolyarnydev.ptknow.entity.lesson.LessonEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

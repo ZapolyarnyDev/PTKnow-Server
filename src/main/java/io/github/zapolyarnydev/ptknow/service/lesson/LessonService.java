@@ -1,10 +1,11 @@
-package io.github.zapolyarnydev.ptknow.service.course;
+package io.github.zapolyarnydev.ptknow.service.lesson;
 
-import io.github.zapolyarnydev.ptknow.dto.course.CreateLessonDTO;
+import io.github.zapolyarnydev.ptknow.dto.lesson.CreateLessonDTO;
 import io.github.zapolyarnydev.ptknow.entity.course.CourseEntity;
 import io.github.zapolyarnydev.ptknow.entity.lesson.LessonEntity;
 import io.github.zapolyarnydev.ptknow.exception.course.LessonNotFoundException;
-import io.github.zapolyarnydev.ptknow.repository.course.LessonRepository;
+import io.github.zapolyarnydev.ptknow.repository.lesson.LessonRepository;
+import io.github.zapolyarnydev.ptknow.service.course.CourseService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

@@ -2,10 +2,10 @@ package io.github.zapolyarnydev.ptknow.api.v0.course;
 
 import io.github.zapolyarnydev.ptknow.api.v0.ApiResponse;
 
-import io.github.zapolyarnydev.ptknow.dto.course.CreateLessonDTO;
-import io.github.zapolyarnydev.ptknow.dto.course.LessonDTO;
-import io.github.zapolyarnydev.ptknow.mapper.course.LessonMapper;
-import io.github.zapolyarnydev.ptknow.service.course.LessonService;
+import io.github.zapolyarnydev.ptknow.dto.lesson.CreateLessonDTO;
+import io.github.zapolyarnydev.ptknow.dto.lesson.LessonDTO;
+import io.github.zapolyarnydev.ptknow.mapper.lesson.LessonMapper;
+import io.github.zapolyarnydev.ptknow.service.lesson.LessonService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
