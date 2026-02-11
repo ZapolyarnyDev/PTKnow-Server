@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface CourseTagRepository extends JpaRepository<CourseTagEntity, Long> {
     Optional<CourseTagEntity> findByTagName(String name);
-    boolean existsByName(String name);
+    boolean existsByTagName(String name);
 }
