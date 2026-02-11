@@ -9,7 +9,7 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring")
 public interface ProfileMapper {
 
-    @Mapping(target = "previewUrl", source = "avatar.id", qualifiedByName = "mapAvatarIdToUrl")
+    @Mapping(target = "avatarUrl", source = "avatar.id", qualifiedByName = "mapAvatarIdToUrl")
     ProfileResponseDTO toDto(ProfileEntity entity);
 
     @Named("mapAvatarIdToUrl")

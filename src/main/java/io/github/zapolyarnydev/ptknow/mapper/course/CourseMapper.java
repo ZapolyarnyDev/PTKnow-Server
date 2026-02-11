@@ -8,6 +8,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Mapper(componentModel = "spring")
@@ -17,7 +18,7 @@ public interface CourseMapper {
     @Mapping(source = "preview.id", target = "previewUrl", qualifiedByName = "mapPreviewIdToUrl")
     CourseDTO courseToDTO(CourseEntity entity);
 
-    default List<String> mapTags(List<CourseTagEntity> tags) {
+    default List<String> mapCourseTags(Set<CourseTagEntity> tags) {
         return tags.stream().map(CourseTagEntity::getTagName).toList();
     }
 
