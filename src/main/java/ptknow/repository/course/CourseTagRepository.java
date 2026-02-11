@@ -1,0 +1,13 @@
+package ptknow.repository.course;
+
+import ptknow.entity.course.CourseTagEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface CourseTagRepository extends JpaRepository<CourseTagEntity, Long> {
+    Optional<CourseTagEntity> findByTagName(String name);
+    boolean existsByName(String name);
+}
