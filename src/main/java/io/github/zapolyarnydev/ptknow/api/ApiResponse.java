@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.ptknow.api.v0;
+package io.github.zapolyarnydev.ptknow.api;
 
 public record ApiResponse <T> (ApiStatus status, String message, T data) {
 

@@ -1,6 +1,6 @@
-package io.github.zapolyarnydev.ptknow.api.v0.profile;
+package io.github.zapolyarnydev.ptknow.api.profile;
 
-import io.github.zapolyarnydev.ptknow.api.v0.ApiResponse;
+import io.github.zapolyarnydev.ptknow.api.ApiResponse;
 import io.github.zapolyarnydev.ptknow.dto.profile.ProfileResponseDTO;
 import io.github.zapolyarnydev.ptknow.dto.profile.ProfileUpdateDTO;
 import io.github.zapolyarnydev.ptknow.entity.profile.ProfileEntity;

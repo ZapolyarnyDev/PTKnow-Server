@@ -1,6 +1,6 @@
-package io.github.zapolyarnydev.ptknow.api.v0.course;
+package io.github.zapolyarnydev.ptknow.api.course;
 
-import io.github.zapolyarnydev.ptknow.api.v0.ApiResponse;
+import io.github.zapolyarnydev.ptknow.api.ApiResponse;
 
 import io.github.zapolyarnydev.ptknow.dto.lesson.CreateLessonDTO;
 import io.github.zapolyarnydev.ptknow.dto.lesson.LessonDTO;

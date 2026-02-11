@@ -1,4 +1,4 @@
-package io.github.zapolyarnydev.ptknow.api.v0.file;
+package io.github.zapolyarnydev.ptknow.api.file;
 
 import io.github.zapolyarnydev.ptknow.service.file.FileService;
 import lombok.AccessLevel;

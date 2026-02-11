@@ -1,6 +1,6 @@
-package io.github.zapolyarnydev.ptknow.api.v0.user;
+package io.github.zapolyarnydev.ptknow.api.user;
 
-import io.github.zapolyarnydev.ptknow.api.v0.ApiResponse;
+import io.github.zapolyarnydev.ptknow.api.ApiResponse;
 import io.github.zapolyarnydev.ptknow.jwt.JwtTokens;
 import io.github.zapolyarnydev.ptknow.service.auth.JwtService;
 import jakarta.validation.constraints.NotBlank;
