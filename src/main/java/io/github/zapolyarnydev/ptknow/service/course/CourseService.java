@@ -63,7 +63,7 @@ public class CourseService implements HandleService<CourseEntity> {
     @Transactional
     public Set<CourseTagEntity> courseTagsFromNames(Set<String> names) {
         return names.stream()
-                .map(name -> courseTagRepository.findByName(name)
+                .map(name -> courseTagRepository.findByTagName(name)
                         .orElseGet(() -> createCourseTag(name)))
                 .collect(Collectors.toSet());
     }
