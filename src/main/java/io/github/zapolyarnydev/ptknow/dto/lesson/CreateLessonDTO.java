@@ -1,13 +1,15 @@
 package io.github.zapolyarnydev.ptknow.dto.lesson;
 
 import io.github.zapolyarnydev.ptknow.entity.lesson.LessonType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
 
 public record CreateLessonDTO(
-        String name,
+        @NotBlank String name,
         String description,
-        Instant beginAt,
-        Instant endsAt,
-        LessonType type
+        @NotNull Instant beginAt,
+        @NotNull Instant endsAt,
+        @NotNull LessonType type
 ) {}

@@ -1,12 +1,12 @@
 package io.github.zapolyarnydev.ptknow.api.user;
 
-import io.github.zapolyarnydev.ptknow.api.ApiResponse;
 import io.github.zapolyarnydev.ptknow.dto.auth.LoginDTO;
 import io.github.zapolyarnydev.ptknow.dto.auth.RegistrationDTO;
 import io.github.zapolyarnydev.ptknow.entity.auth.AuthEntity;
 import io.github.zapolyarnydev.ptknow.jwt.JwtTokens;
 import io.github.zapolyarnydev.ptknow.service.auth.AuthService;
 import io.github.zapolyarnydev.ptknow.service.auth.JwtService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -29,41 +29,38 @@ public class AuthController {
     JwtService jwtService;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<String>> register(@RequestBody RegistrationDTO registrationDTO) {
+    public ResponseEntity<String> register(@Valid @RequestBody RegistrationDTO registrationDTO) {
         AuthEntity entity = authService.register(registrationDTO);
         JwtTokens tokens = jwtService.generateTokenPair(entity);
 
-        var response = ApiResponse.success("Регистрация прошла успешно", tokens.accessToken());
         ResponseCookie cookie = jwtService.tokenToCookie("/v0/token/refresh", tokens.refreshToken());
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(response);
+                .body(tokens.accessToken());
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<String> login(@Valid @RequestBody LoginDTO loginDTO) {
         AuthEntity entity = authService.authenticate(loginDTO);
         JwtTokens tokens = jwtService.generateTokenPair(entity);
 
-        var response = ApiResponse.success("Вход прошёл успешно", tokens.accessToken());
         ResponseCookie cookie = jwtService.tokenToCookie("/v0/token/refresh", tokens.refreshToken());
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(response);
+                .body(tokens.accessToken());
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<Void>> logout(@AuthenticationPrincipal AuthEntity user) {
+    public ResponseEntity<?> logout(@AuthenticationPrincipal AuthEntity user) {
         jwtService.invalidateUserTokens(user);
 
-        var response = ApiResponse.success("Вы успешно вышли из системы");
         ResponseCookie cookie = jwtService.tokenToCookie("/v0/token/refresh", "");
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(response);
+                .build();
     }
 
 }

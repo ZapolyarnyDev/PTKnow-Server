@@ -1,9 +1,12 @@
 package io.github.zapolyarnydev.ptknow.dto.course;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+
 import java.util.Set;
 
 public record CreateCourseDTO(
-        String name,
-        String description,
-        Set<String> tags
+        @NotBlank String name,
+        @NotBlank String description,
+        @NotEmpty Set<String> tags
 ) { }

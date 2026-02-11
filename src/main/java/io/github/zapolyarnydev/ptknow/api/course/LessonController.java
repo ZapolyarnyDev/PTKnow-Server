@@ -1,14 +1,14 @@
 package io.github.zapolyarnydev.ptknow.api.course;
 
-import io.github.zapolyarnydev.ptknow.api.ApiResponse;
-
 import io.github.zapolyarnydev.ptknow.dto.lesson.CreateLessonDTO;
 import io.github.zapolyarnydev.ptknow.dto.lesson.LessonDTO;
 import io.github.zapolyarnydev.ptknow.mapper.lesson.LessonMapper;
 import io.github.zapolyarnydev.ptknow.service.lesson.LessonService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,31 +24,31 @@ public class LessonController {
     LessonMapper lessonMapper;
 
     @PostMapping("/{courseId}")
-    public ResponseEntity<ApiResponse<LessonDTO>> createLesson(
+    public ResponseEntity<LessonDTO> createLesson(
             @PathVariable Long courseId,
-            @RequestBody CreateLessonDTO dto
+            @Valid @RequestBody CreateLessonDTO dto
     ) {
         var lesson = lessonService.createLesson(courseId, dto);
-        return ResponseEntity.ok(ApiResponse.success("Занятие успешно создано", lessonMapper.toDTO(lesson)));
+        return ResponseEntity.ok(lessonMapper.toDTO(lesson));
     }
 
     @GetMapping("/{lessonId}")
-    public ResponseEntity<ApiResponse<LessonDTO>> getLesson(@PathVariable Long lessonId) {
+    public ResponseEntity<LessonDTO> getLesson(@PathVariable Long lessonId) {
         var lesson = lessonMapper.toDTO(lessonService.findById(lessonId));
-        return ResponseEntity.ok(ApiResponse.success(null, lesson));
+        return ResponseEntity.ok(lesson);
     }
 
     @GetMapping("/course/{courseId}")
-    public ResponseEntity<ApiResponse<List<LessonDTO>>> getLessonsByCourse(@PathVariable Long courseId) {
+    public ResponseEntity<List<LessonDTO>> getLessonsByCourse(@PathVariable Long courseId) {
         var lessons = lessonService.findAllByCourse(courseId).stream()
                 .map(lessonMapper::toDTO)
                 .toList();
-        return ResponseEntity.ok(ApiResponse.success(null, lessons));
+        return ResponseEntity.ok(lessons);
     }
 
     @DeleteMapping("/{lessonId}")
-    public ResponseEntity<ApiResponse<Void>> deleteLesson(@PathVariable Long lessonId) {
+    public ResponseEntity<Void> deleteLesson(@PathVariable Long lessonId) {
         lessonService.deleteById(lessonId);
-        return ResponseEntity.ok(ApiResponse.success("Занятие успешно удалено"));
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
