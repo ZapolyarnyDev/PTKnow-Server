@@ -1,6 +1,7 @@
 package io.github.zapolyarnydev.ptknow.filter;
 
 import io.github.zapolyarnydev.ptknow.entity.auth.AuthEntity;
+import io.github.zapolyarnydev.ptknow.jwt.JwtClaim;
 import io.github.zapolyarnydev.ptknow.service.auth.AuthService;
 import io.github.zapolyarnydev.ptknow.service.auth.JwtService;
 import jakarta.servlet.FilterChain;
@@ -43,7 +44,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             Jwt jwt = jwtDecoder.decode(token);
 
-            if (!jwtService.isValid(token)) {
+            if(!jwt.getClaim(JwtClaim.TYPE.getName()).equals("access")) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }

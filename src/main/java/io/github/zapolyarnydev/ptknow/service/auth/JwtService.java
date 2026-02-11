@@ -73,12 +73,17 @@ public class JwtService {
         return new JwtTokens(generateAccessToken(entity), generateRefreshToken(entity));
     }
 
+    @Transactional
     public JwtTokens refresh(String refreshToken) throws TokenNotFoundException, InvalidTokenException {
-        if(!isValid(refreshToken))
+        RefreshTokenEntity entity = findToken(refreshToken);
+
+        if(!isValid(entity))
             throw new InvalidTokenException(refreshToken);
 
-        RefreshTokenEntity entity = findToken(refreshToken);
-        invalidate(entity);
+        entity.setValid(false);
+        log.info("Токен {} инвалидирован. ID: {}", entity.getToken(), entity.getId());
+
+        tokenRepository.save(entity);
 
         return generateTokenPair(entity.getUser());
     }
@@ -92,17 +97,10 @@ public class JwtService {
                 .build();
     }
 
-    public boolean isValid(String token) {
-        var entity = findToken(token);
-
-        return entity.isValid() && entity.getExpireDate().isAfter(Instant.now());
+    public boolean isValid(RefreshTokenEntity token) {
+        return token.isValid() && token.getExpireDate().isAfter(Instant.now());
     }
 
-    @Transactional
-    public void invalidate(RefreshTokenEntity token) {
-        token.setValid(false);
-        log.info("Токен {} инвалидирован. ID: {}", token.getToken(), token.getId());
-    }
 
     @Transactional
     public void invalidateUserTokens(AuthEntity user) {
