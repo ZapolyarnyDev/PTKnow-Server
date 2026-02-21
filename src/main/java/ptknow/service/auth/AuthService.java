@@ -68,9 +68,9 @@ public class AuthService implements UserDetailsService {
     }
 
     @Override
-    public AuthEntity loadUserByUsername(String username) throws UsernameNotFoundException {
-        return repository.findByEmail(username)
-                .orElseThrow(() -> new EmailNotFoundException(username));
+    public AuthEntity loadUserByUsername(String email) throws UsernameNotFoundException {
+        return repository.findByEmail(email)
+                .orElseThrow(() -> new EmailNotFoundException(email));
     }
 
 }
