@@ -1,9 +1,9 @@
 package ptknow.filter;
 
 import ptknow.entity.auth.AuthEntity;
+import ptknow.config.security.RestAuthenticationEntryPoint;
 import ptknow.jwt.JwtClaim;
 import ptknow.service.auth.AuthService;
-import ptknow.service.auth.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,11 +11,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -28,7 +28,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     JwtDecoder jwtDecoder;
     AuthService authService;
-    JwtService jwtService;
+    RestAuthenticationEntryPoint authenticationEntryPoint;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -45,7 +45,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             Jwt jwt = jwtDecoder.decode(token);
 
             if(!jwt.getClaim(JwtClaim.TYPE.getName()).equals("access")) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                authenticationEntryPoint.commence(
+                        request,
+                        response,
+                        new BadCredentialsException("Invalid token type")
+                );
                 return;
             }
 
@@ -60,8 +64,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        } catch (JwtException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } catch (RuntimeException e) {
+            authenticationEntryPoint.commence(
+                    request,
+                    response,
+                    new BadCredentialsException("Invalid access token", e)
+            );
             return;
         }
 

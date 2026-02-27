@@ -70,7 +70,7 @@ public class CourseService implements HandleService<CourseEntity> {
 
     @Transactional
     public CourseTagEntity createCourseTag(String name) {
-        if(courseTagRepository.existsByName(name))
+        if(courseTagRepository.existsByTagName(name))
             throw new CourseTagAlreadyExists(name);
 
         var entity = new CourseTagEntity(name);

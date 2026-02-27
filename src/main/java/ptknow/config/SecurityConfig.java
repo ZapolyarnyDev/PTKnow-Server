@@ -3,6 +3,8 @@ package ptknow.config;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import ptknow.filter.JwtAuthFilter;
 import ptknow.properties.JwtProperties;
+import ptknow.config.security.RestAccessDeniedHandler;
+import ptknow.config.security.RestAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,12 +32,18 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtProperties jwtProperties;
+    private final RestAuthenticationEntryPoint authenticationEntryPoint;
+    private final RestAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter authFilter) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v0/auth/register", "/v0/auth/login", "/v0/token/refresh", "/oauth2/**").permitAll()
                         .anyRequest().authenticated()
