@@ -1,14 +1,13 @@
 package ptknow.entity.course;
 
+import lombok.*;
 import ptknow.exception.credentials.InvalidCredentialsException;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "tags")
@@ -28,7 +27,7 @@ public class CourseTagEntity {
     String tagName;
 
     @ManyToMany(mappedBy = "courseTags")
-    List<CourseEntity> courses;
+    Set<CourseEntity> courses = new HashSet<>();
 
     public CourseTagEntity(String tagName) {
         this.tagName = tagName;

@@ -1,5 +1,6 @@
 package ptknow.entity.course;
 
+import ptknow.entity.auth.AuthEntity;
 import ptknow.entity.file.FileEntity;
 import ptknow.entity.lesson.LessonEntity;
 import ptknow.exception.credentials.InvalidCredentialsException;
@@ -7,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -39,10 +41,12 @@ public class CourseEntity {
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    Set<CourseTagEntity> courseTags;
+    @Builder.Default
+    Set<CourseTagEntity> courseTags = new HashSet<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    Set<LessonEntity> lessons;
+    @Builder.Default
+    Set<LessonEntity> lessons = new HashSet<>();
 
     @Setter
     @Column(nullable = false)
