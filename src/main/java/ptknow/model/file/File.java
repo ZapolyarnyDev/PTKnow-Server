@@ -1,4 +1,4 @@
-package ptknow.entity.file;
+package ptknow.model.file;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class FileEntity {
+public class File {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

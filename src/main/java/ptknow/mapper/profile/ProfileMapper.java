@@ -1,7 +1,7 @@
 package ptknow.mapper.profile;
 
 import ptknow.dto.profile.ProfileResponseDTO;
-import ptknow.entity.profile.ProfileEntity;
+import ptknow.model.profile.Profile;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -10,7 +10,7 @@ import org.mapstruct.Named;
 public interface ProfileMapper {
 
     @Mapping(target = "avatarUrl", source = "avatar.id", qualifiedByName = "mapAvatarIdToUrl")
-    ProfileResponseDTO toDto(ProfileEntity entity);
+    ProfileResponseDTO toDto(Profile entity);
 
     @Named("mapAvatarIdToUrl")
     default String mapAvatarIdToUrl(java.util.UUID avatarId) {
@@ -18,3 +18,4 @@ public interface ProfileMapper {
         return "/v0/files/" + avatarId;
     }
 }
+

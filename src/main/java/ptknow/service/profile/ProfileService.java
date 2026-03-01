@@ -1,9 +1,9 @@
 package ptknow.service.profile;
 
 import ptknow.dto.profile.ProfileUpdateDTO;
-import ptknow.entity.file.FileEntity;
-import ptknow.entity.profile.ProfileEntity;
-import ptknow.entity.auth.AuthEntity;
+import ptknow.model.file.File;
+import ptknow.model.profile.Profile;
+import ptknow.model.auth.Auth;
 import ptknow.exception.user.UserNotFoundException;
 import ptknow.generator.handle.HandleGenerator;
 import ptknow.repository.profile.ProfileRepository;
@@ -22,16 +22,16 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class ProfileService implements HandleService<ProfileEntity> {
+public class ProfileService implements HandleService<Profile> {
 
     FileService fileService;
     ProfileRepository repository;
     HandleGenerator handleGenerator;
 
     @Transactional
-    public ProfileEntity createProfile(String fullName, AuthEntity user) {
+    public Profile createProfile(String fullName, Auth user) {
         String handle = handleGenerator.generate(repository::existsByHandle);
-        var entity = ProfileEntity.builder()
+        var entity = Profile.builder()
                 .fullName(fullName)
                 .handle(handle)
                 .user(user)
@@ -41,8 +41,8 @@ public class ProfileService implements HandleService<ProfileEntity> {
     }
 
     @Transactional
-    public ProfileEntity update(UUID userId, ProfileUpdateDTO dto) {
-        ProfileEntity profile = repository.findByUserId(userId)
+    public Profile update(UUID userId, ProfileUpdateDTO dto) {
+        Profile profile = repository.findByUserId(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         if (dto.fullName() != null)
             profile.setFullName(dto.fullName());
@@ -55,10 +55,10 @@ public class ProfileService implements HandleService<ProfileEntity> {
     }
 
     @Transactional
-    public ProfileEntity updateAvatar(UUID userId, MultipartFile file) throws IOException {
-        ProfileEntity profile = getProfile(userId);
+    public Profile updateAvatar(UUID userId, MultipartFile file) throws IOException {
+        Profile profile = getProfile(userId);
 
-        FileEntity savedFile = fileService.saveFile(file);
+        File savedFile = fileService.saveFile(file);
         profile.setAvatar(savedFile);
 
         return repository.save(profile);
@@ -66,14 +66,15 @@ public class ProfileService implements HandleService<ProfileEntity> {
 
     @Transactional(readOnly = true)
     @Override
-    public ProfileEntity getByHandle(String handle) {
+    public Profile getByHandle(String handle) {
         return repository.findByHandle(handle)
                 .orElseThrow(() -> new UserNotFoundException(handle));
     }
 
     @Transactional(readOnly = true)
-    public ProfileEntity getProfile(UUID userId) {
+    public Profile getProfile(UUID userId) {
         return repository.findByUserId(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
     }
 }
+

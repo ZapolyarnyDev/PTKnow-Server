@@ -12,3 +12,4 @@ public enum JwtClaim {
 
     private final String name;
 }
+

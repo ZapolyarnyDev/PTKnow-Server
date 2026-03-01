@@ -5,3 +5,4 @@ public class EmailNotFoundException extends RuntimeException {
         super(String.format("Пользователь с почтой %s не найден", email));
     }
 }
+

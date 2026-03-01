@@ -9,3 +9,4 @@ public class CourseNotFoundException extends RuntimeException {
         super(String.format("Курс с handle '%s' не найден", handle));
     }
 }
+

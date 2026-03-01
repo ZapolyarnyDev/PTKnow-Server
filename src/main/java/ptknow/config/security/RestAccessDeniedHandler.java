@@ -33,3 +33,4 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
         );
     }
 }
+

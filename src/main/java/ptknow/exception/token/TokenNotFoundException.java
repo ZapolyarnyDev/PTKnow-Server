@@ -5,3 +5,4 @@ public class TokenNotFoundException extends RuntimeException {
         super(String.format("Токен %s не найден", token));
     }
 }
+

@@ -12,3 +12,4 @@ public enum ClaimType {
 
     private final String name;
 }
+

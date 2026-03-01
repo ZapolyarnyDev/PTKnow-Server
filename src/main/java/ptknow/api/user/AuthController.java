@@ -2,7 +2,7 @@ package ptknow.api.user;
 
 import ptknow.dto.auth.LoginDTO;
 import ptknow.dto.auth.RegistrationDTO;
-import ptknow.entity.auth.AuthEntity;
+import ptknow.model.auth.Auth;
 import ptknow.jwt.JwtTokens;
 import ptknow.service.auth.AuthService;
 import ptknow.service.auth.JwtService;
@@ -30,7 +30,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody RegistrationDTO registrationDTO) {
-        AuthEntity entity = authService.register(registrationDTO);
+        Auth entity = authService.register(registrationDTO);
         JwtTokens tokens = jwtService.generateTokenPair(entity);
 
         ResponseCookie cookie = jwtService.tokenToCookie("/v0/token/refresh", tokens.refreshToken());
@@ -42,7 +42,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginDTO loginDTO) {
-        AuthEntity entity = authService.authenticate(loginDTO);
+        Auth entity = authService.authenticate(loginDTO);
         JwtTokens tokens = jwtService.generateTokenPair(entity);
 
         ResponseCookie cookie = jwtService.tokenToCookie("/v0/token/refresh", tokens.refreshToken());
@@ -53,7 +53,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@AuthenticationPrincipal AuthEntity user) {
+    public ResponseEntity<?> logout(@AuthenticationPrincipal Auth user) {
         jwtService.invalidateUserTokens(user);
 
         ResponseCookie cookie = jwtService.tokenToCookie("/v0/token/refresh", "");
@@ -64,3 +64,4 @@ public class AuthController {
     }
 
 }
+

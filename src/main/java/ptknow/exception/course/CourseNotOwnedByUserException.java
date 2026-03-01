@@ -7,3 +7,4 @@ public class CourseNotOwnedByUserException extends RuntimeException {
       super(String.format("Course not owned by user with the id '%s'", id));
     }
 }
+

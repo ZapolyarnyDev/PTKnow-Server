@@ -1,6 +1,6 @@
 package ptknow.filter;
 
-import ptknow.entity.auth.AuthEntity;
+import ptknow.model.auth.Auth;
 import ptknow.config.security.RestAuthenticationEntryPoint;
 import ptknow.jwt.JwtClaim;
 import ptknow.service.auth.AuthService;
@@ -54,7 +54,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
 
             String email = jwt.getSubject();
-            AuthEntity entity = authService.loadUserByUsername(email);
+            Auth entity = authService.loadUserByUsername(email);
 
             var authentication = new UsernamePasswordAuthenticationToken(
                     entity,
@@ -76,3 +76,4 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+

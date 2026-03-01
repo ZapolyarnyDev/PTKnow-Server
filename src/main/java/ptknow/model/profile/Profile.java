@@ -1,7 +1,7 @@
-package ptknow.entity.profile;
+package ptknow.model.profile;
 
-import ptknow.entity.file.FileEntity;
-import ptknow.entity.auth.AuthEntity;
+import ptknow.model.file.File;
+import ptknow.model.auth.Auth;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProfileEntity {
+public class Profile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -27,11 +27,11 @@ public class ProfileEntity {
 
     @OneToOne
     @JoinColumn(name = "user_id", updatable = false, unique = true)
-    AuthEntity user;
+    Auth user;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "avatar_id")
-    FileEntity avatar;
+    File avatar;
 
     @Column(length = 500)
     String summary;
@@ -39,3 +39,4 @@ public class ProfileEntity {
     @Column(unique = true, nullable = false)
     String handle;
 }
+

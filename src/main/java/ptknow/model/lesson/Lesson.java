@@ -1,6 +1,6 @@
-package ptknow.entity.lesson;
+package ptknow.model.lesson;
 
-import ptknow.entity.course.CourseEntity;
+import ptknow.model.course.Course;
 import ptknow.exception.credentials.InvalidCredentialsException;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,7 +14,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class LessonEntity {
+public class Lesson {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lesson_id_generator")
@@ -44,10 +44,10 @@ public class LessonEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
-    CourseEntity course;
+    Course course;
 
     @Builder
-    public LessonEntity(String name, String description, Instant beginAt, Instant endsAt, CourseEntity course, LessonType lessonType) {
+    public Lesson(String name, String description, Instant beginAt, Instant endsAt, Course course, LessonType lessonType) {
         this.name = name;
         this.description = description;
         this.beginAt = beginAt;
@@ -72,3 +72,4 @@ public class LessonEntity {
         }
     }
 }
+

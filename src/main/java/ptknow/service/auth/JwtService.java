@@ -1,10 +1,10 @@
 package ptknow.service.auth;
 
-import ptknow.entity.token.RefreshTokenEntity;
+import ptknow.model.token.RefreshToken;
 import ptknow.exception.token.InvalidTokenException;
 import ptknow.exception.token.TokenNotFoundException;
 import ptknow.jwt.JwtTokens;
-import ptknow.entity.auth.AuthEntity;
+import ptknow.model.auth.Auth;
 import ptknow.jwt.ClaimType;
 import ptknow.jwt.JwtClaim;
 import ptknow.properties.JwtProperties;
@@ -32,7 +32,7 @@ public class JwtService {
     JwtEncoder jwtEncoder;
     RefreshTokenRepository tokenRepository;
 
-    private String generateAccessToken(AuthEntity user) {
+    private String generateAccessToken(Auth user) {
         var now = Instant.now();
         var claimSet = JwtClaimsSet.builder()
                 .issuer(properties.getIssuer())
@@ -45,7 +45,7 @@ public class JwtService {
         return jwtEncoder.encode(JwtEncoderParameters.from(claimSet)).getTokenValue();
     }
 
-    private String generateRefreshToken(AuthEntity user) {
+    private String generateRefreshToken(Auth user) {
         var now = Instant.now();
         Instant expiresAt = properties.getRefreshTokenExpiryInstant();
 
@@ -59,7 +59,7 @@ public class JwtService {
 
         String token = jwtEncoder.encode(JwtEncoderParameters.from(claimSet)).getTokenValue();
 
-        var entity = RefreshTokenEntity.builder()
+        var entity = RefreshToken.builder()
                 .token(token)
                 .expireDate(expiresAt)
                 .user(user)
@@ -69,13 +69,13 @@ public class JwtService {
         return token;
     }
 
-    public JwtTokens generateTokenPair(AuthEntity entity) {
+    public JwtTokens generateTokenPair(Auth entity) {
         return new JwtTokens(generateAccessToken(entity), generateRefreshToken(entity));
     }
 
     @Transactional
     public JwtTokens refresh(String refreshToken) throws TokenNotFoundException, InvalidTokenException {
-        RefreshTokenEntity entity = findToken(refreshToken);
+        RefreshToken entity = findToken(refreshToken);
 
         if(!isValid(entity))
             throw new InvalidTokenException(refreshToken);
@@ -97,13 +97,13 @@ public class JwtService {
                 .build();
     }
 
-    public boolean isValid(RefreshTokenEntity token) {
+    public boolean isValid(RefreshToken token) {
         return token.isValid() && token.getExpireDate().isAfter(Instant.now());
     }
 
 
     @Transactional
-    public void invalidateUserTokens(AuthEntity user) {
+    public void invalidateUserTokens(Auth user) {
         var tokens = tokenRepository.findAllByUserAndValidIsTrueAndExpireDateAfter(user, Instant.now());
 
         for (var token : tokens) {
@@ -113,8 +113,9 @@ public class JwtService {
         tokenRepository.saveAll(tokens);
     }
 
-    private RefreshTokenEntity findToken(String token) {
+    private RefreshToken findToken(String token) {
         return tokenRepository.findByToken(token)
                 .orElseThrow(() -> new TokenNotFoundException(token));
     }
 }
+

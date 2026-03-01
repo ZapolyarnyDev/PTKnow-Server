@@ -39,3 +39,4 @@ public class JwtProperties {
         return Instant.now().plus(refreshTokenExpiration);
     }
 }
+

@@ -1,11 +1,12 @@
 package ptknow.service;
 
-import ptknow.entity.auth.AuthEntity;
+import ptknow.model.auth.Auth;
 
 public interface OwnershipService<ID> {
 
-    boolean isOwner(ID resourceId, AuthEntity auth);
+    boolean isOwner(ID resourceId, Auth auth);
 
-    AuthEntity getOwner(ID resourceId);
+    Auth getOwner(ID resourceId);
 
 }
+

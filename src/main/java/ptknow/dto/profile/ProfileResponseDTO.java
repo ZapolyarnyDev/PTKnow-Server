@@ -6,3 +6,4 @@ public record ProfileResponseDTO(
         String handle,
         String avatarUrl
 ) {}
+

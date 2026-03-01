@@ -5,3 +5,4 @@ public class LessonNotFoundException extends RuntimeException {
         super(String.format("Занятие с id %d не найдено", id));
     }
 }
+

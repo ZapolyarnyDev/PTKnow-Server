@@ -10,3 +10,4 @@ public record CreateCourseDTO(
         @NotBlank String description,
         @NotEmpty Set<String> tags
 ) { }
+

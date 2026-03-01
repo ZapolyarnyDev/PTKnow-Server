@@ -16,3 +16,4 @@ public class GeneratorConfig {
         return () -> NanoIdUtils.randomNanoId(NanoIdUtils.DEFAULT_NUMBER_GENERATOR, generationSymbols, 8);
     }
 }
+

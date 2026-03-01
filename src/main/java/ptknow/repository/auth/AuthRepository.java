@@ -1,6 +1,6 @@
 package ptknow.repository.auth;
 
-import ptknow.entity.auth.AuthEntity;
+import ptknow.model.auth.Auth;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,8 +8,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface AuthRepository extends JpaRepository<AuthEntity, UUID> {
+public interface AuthRepository extends JpaRepository<Auth, UUID> {
 
-    Optional<AuthEntity> findByEmail(String email);
+    Optional<Auth> findByEmail(String email);
     boolean existsByEmail(String email);
 }
+

@@ -1,4 +1,4 @@
-package ptknow.entity.course;
+package ptknow.model.course;
 
 import lombok.*;
 import ptknow.exception.credentials.InvalidCredentialsException;
@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class CourseTagEntity {
+public class CourseTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_tag_id_generator")
@@ -28,9 +28,9 @@ public class CourseTagEntity {
     String tagName;
 
     @ManyToMany(mappedBy = "courseTags")
-    Set<CourseEntity> courses = new HashSet<>();
+    Set<Course> courses = new HashSet<>();
 
-    public CourseTagEntity(String tagName) {
+    public CourseTag(String tagName) {
         this.tagName = tagName;
     }
 
@@ -41,7 +41,8 @@ public class CourseTagEntity {
             throw new InvalidCredentialsException("Course tag name can't be null or blank");
     }
 
-    public Set<CourseEntity> getCourses() {
+    public Set<Course> getCourses() {
         return Collections.unmodifiableSet(courses);
     }
 }
+

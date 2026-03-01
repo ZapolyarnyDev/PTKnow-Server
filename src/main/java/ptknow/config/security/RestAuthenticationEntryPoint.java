@@ -33,3 +33,4 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         );
     }
 }
+

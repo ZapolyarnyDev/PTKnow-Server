@@ -1,6 +1,6 @@
 package ptknow.service.file;
 
-import ptknow.entity.file.FileEntity;
+import ptknow.model.file.File;
 import ptknow.exception.file.FileNotFoundException;
 import ptknow.repository.file.FileRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class FileService {
 
     private final Path root = Paths.get("uploads");
 
-    public FileEntity saveFile(MultipartFile file) throws IOException {
+    public File saveFile(MultipartFile file) throws IOException {
         if (!Files.exists(root)) {
             Files.createDirectories(root);
         }
@@ -29,7 +29,7 @@ public class FileService {
         Path filePath = root.resolve(fileId.toString());
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        FileEntity entity = FileEntity.builder()
+        File entity = File.builder()
                 .id(fileId)
                 .originalFilename(file.getOriginalFilename())
                 .contentType(file.getContentType())
@@ -41,7 +41,7 @@ public class FileService {
     }
 
     public byte[] getFile(UUID id) throws IOException {
-        FileEntity fileEntity = fileRepository.findById(id)
+        File fileEntity = fileRepository.findById(id)
                 .orElseThrow(() -> new FileNotFoundException("File not found"));
 
         Path path = Paths.get(fileEntity.getStoragePath());
@@ -49,7 +49,7 @@ public class FileService {
     }
 
     public void deleteFile(UUID id) throws IOException {
-        FileEntity fileEntity = fileRepository.findById(id)
+        File fileEntity = fileRepository.findById(id)
                 .orElseThrow(() -> new FileNotFoundException("File not found"));
 
         Path path = Paths.get(fileEntity.getStoragePath());
@@ -61,8 +61,9 @@ public class FileService {
     }
 
     public String getContentType(UUID id) {
-        FileEntity fileEntity = fileRepository.findById(id)
+        File fileEntity = fileRepository.findById(id)
                 .orElseThrow(() -> new FileNotFoundException("File not found"));
         return fileEntity.getContentType();
     }
 }
+

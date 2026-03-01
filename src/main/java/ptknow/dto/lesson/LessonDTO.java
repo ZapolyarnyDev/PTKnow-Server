@@ -1,7 +1,7 @@
 package ptknow.dto.lesson;
 
-import ptknow.entity.lesson.LessonState;
-import ptknow.entity.lesson.LessonType;
+import ptknow.model.lesson.LessonState;
+import ptknow.model.lesson.LessonType;
 
 import java.time.Instant;
 

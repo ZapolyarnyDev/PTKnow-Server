@@ -7,3 +7,4 @@ public class CourseCannotBeEditByUserException extends RuntimeException {
         super(String.format("Course cannot be edit by user with the id '%s'", id));
     }
 }
+

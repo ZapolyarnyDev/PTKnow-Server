@@ -1,7 +1,7 @@
 package ptknow.mapper.lesson;
 
 import ptknow.dto.lesson.LessonDTO;
-import ptknow.entity.lesson.LessonEntity;
+import ptknow.model.lesson.Lesson;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -9,5 +9,6 @@ import org.mapstruct.Mapping;
 public interface LessonMapper {
 
     @Mapping(target = "courseId", source = "course.id")
-    LessonDTO toDTO(LessonEntity lesson);
+    LessonDTO toDTO(Lesson lesson);
 }
+

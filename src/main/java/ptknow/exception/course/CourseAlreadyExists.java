@@ -5,3 +5,4 @@ public class CourseAlreadyExists extends RuntimeException {
         super(String.format("Курс с названием '%s' уже используется", course));
     }
 }
+

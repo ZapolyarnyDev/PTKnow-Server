@@ -5,3 +5,4 @@ public class InvalidTokenException extends RuntimeException {
         super(String.format("Токен %s не валиден", token));
     }
 }
+

@@ -1,8 +1,8 @@
 package ptknow.service.lesson;
 
 import ptknow.dto.lesson.CreateLessonDTO;
-import ptknow.entity.course.CourseEntity;
-import ptknow.entity.lesson.LessonEntity;
+import ptknow.model.course.Course;
+import ptknow.model.lesson.Lesson;
 import ptknow.exception.course.LessonNotFoundException;
 import ptknow.repository.lesson.LessonRepository;
 import ptknow.service.course.CourseService;
@@ -23,10 +23,10 @@ public class LessonService {
     CourseService courseService;
 
     @Transactional
-    public LessonEntity createLesson(Long courseId, CreateLessonDTO dto) {
-        CourseEntity course = courseService.findCourseById(courseId);
+    public Lesson createLesson(Long courseId, CreateLessonDTO dto) {
+        Course course = courseService.findCourseById(courseId);
 
-        LessonEntity entity = LessonEntity.builder()
+        Lesson entity = Lesson.builder()
                 .name(dto.name())
                 .description(dto.description())
                 .beginAt(dto.beginAt())
@@ -39,19 +39,20 @@ public class LessonService {
     }
 
     @Transactional(readOnly = true)
-    public LessonEntity findById(Long id) {
+    public Lesson findById(Long id) {
         return lessonRepository.findById(id)
                 .orElseThrow(() -> new LessonNotFoundException(id));
     }
 
     @Transactional(readOnly = true)
-    public List<LessonEntity> findAllByCourse(Long courseId) {
+    public List<Lesson> findAllByCourse(Long courseId) {
         return lessonRepository.getAllByCourse_Id(courseId);
     }
 
     @Transactional
     public void deleteById(Long id) {
-        LessonEntity lesson = findById(id);
+        Lesson lesson = findById(id);
         lessonRepository.delete(lesson);
     }
 }
+

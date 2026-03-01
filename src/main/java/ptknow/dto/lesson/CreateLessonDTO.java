@@ -1,6 +1,6 @@
 package ptknow.dto.lesson;
 
-import ptknow.entity.lesson.LessonType;
+import ptknow.model.lesson.LessonType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 

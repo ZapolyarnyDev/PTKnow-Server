@@ -5,3 +5,4 @@ public class CourseTagAlreadyExists extends RuntimeException {
         super(String.format("Тег '%s' для курсов уже существует", tag));
     }
 }
+

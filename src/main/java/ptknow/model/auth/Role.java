@@ -1,4 +1,4 @@
-package ptknow.entity.auth;
+package ptknow.model.auth;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,3 +16,4 @@ public enum Role {
         return this.authorityName;
     }
 }
+

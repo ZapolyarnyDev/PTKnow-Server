@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ptknow.dto.course.CreateCourseDTO;
-import ptknow.entity.auth.AuthEntity;
-import ptknow.entity.auth.Role;
-import ptknow.entity.course.CourseEntity;
-import ptknow.entity.course.CourseTagEntity;
-import ptknow.entity.file.FileEntity;
+import ptknow.model.auth.Auth;
+import ptknow.model.auth.Role;
+import ptknow.model.course.Course;
+import ptknow.model.course.CourseTag;
+import ptknow.model.file.File;
 import ptknow.exception.course.*;
 import ptknow.exception.user.UserNotFoundException;
 import ptknow.generator.handle.HandleGenerator;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
-public class CourseService implements HandleService<CourseEntity>, OwnershipService<Long> {
+public class CourseService implements HandleService<Course>, OwnershipService<Long> {
 
     AuthRepository authRepository;
     CourseRepository repository;
@@ -41,19 +41,19 @@ public class CourseService implements HandleService<CourseEntity>, OwnershipServ
     FileService fileService;
 
     @Transactional
-    public CourseEntity publishCourse(CreateCourseDTO dto, AuthEntity initiator, MultipartFile preview) throws IOException {
+    public Course publishCourse(CreateCourseDTO dto, Auth initiator, MultipartFile preview) throws IOException {
         if (repository.existsByName(dto.name())) {
             throw new CourseAlreadyExists(dto.name());
         }
 
         String handle = handleGenerator.generate(repository::existsByHandle);
 
-        FileEntity previewFile = null;
+        File previewFile = null;
         if (preview != null && !preview.isEmpty()) {
             previewFile = fileService.saveFile(preview);
         }
 
-        var entity = CourseEntity.builder()
+        var entity = Course.builder()
                 .name(dto.name())
                 .description(dto.description())
                 .courseTags(courseTagsFromNames(dto.tags()))
@@ -70,7 +70,7 @@ public class CourseService implements HandleService<CourseEntity>, OwnershipServ
 
 
     @Transactional
-    public Set<CourseTagEntity> courseTagsFromNames(Set<String> names) {
+    public Set<CourseTag> courseTagsFromNames(Set<String> names) {
         return names.stream()
                 .map(name -> courseTagRepository.findByTagName(name)
                         .orElseGet(() -> createCourseTag(name)))
@@ -78,27 +78,27 @@ public class CourseService implements HandleService<CourseEntity>, OwnershipServ
     }
 
     @Transactional
-    public CourseTagEntity createCourseTag(String name) {
+    public CourseTag createCourseTag(String name) {
         if (courseTagRepository.existsByTagName(name))
             throw new CourseTagAlreadyExists(name);
 
-        var entity = new CourseTagEntity(name);
+        var entity = new CourseTag(name);
         courseTagRepository.save(entity);
 
         return entity;
     }
 
     @Transactional
-    public void deleteCourseById(Long courseId, AuthEntity initiator) {
+    public void deleteCourseById(Long courseId, Auth initiator) {
         var course = findCourseById(courseId);
 
         if(initiator.getRole() != Role.ADMIN && !course.getOwner().equals(initiator))
             throw new CourseNotOwnedByUserException(initiator.getId());
 
-        Set<CourseTagEntity> tags = course.getCourseTags();
+        Set<CourseTag> tags = course.getCourseTags();
         repository.delete(course);
 
-        for (CourseTagEntity tag : tags) {
+        for (CourseTag tag : tags) {
             if (repository.countByCourseTagsContains(tag) == 0) {
                 courseTagRepository.delete(tag);
             }
@@ -106,25 +106,25 @@ public class CourseService implements HandleService<CourseEntity>, OwnershipServ
     }
 
     @Transactional(readOnly = true)
-    public CourseEntity findCourseById(Long courseId) {
+    public Course findCourseById(Long courseId) {
         return repository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFoundException(courseId));
     }
 
-    public boolean canEdit(CourseEntity course, AuthEntity auth) {
+    public boolean canEdit(Course course, Auth auth) {
         return auth.getRole() == Role.ADMIN ||
                 course.getOwner().equals(auth) ||
                 course.hasEditor(auth);
     }
 
     @Transactional
-    public CourseEntity updatePreview(Long courseId, AuthEntity initiator, MultipartFile file) throws IOException {
-        CourseEntity course = findCourseById(courseId);
+    public Course updatePreview(Long courseId, Auth initiator, MultipartFile file) throws IOException {
+        Course course = findCourseById(courseId);
 
         if(!canEdit(course, initiator))
             throw new CourseCannotBeEditByUserException(initiator.getId());
 
-        FileEntity savedFile = fileService.saveFile(file);
+        File savedFile = fileService.saveFile(file);
         if (course.getPreview() != null) {
             fileService.deleteFile(course.getPreview().getId());
         }
@@ -134,24 +134,24 @@ public class CourseService implements HandleService<CourseEntity>, OwnershipServ
     }
 
     @Transactional(readOnly = true)
-    public List<CourseEntity> findAllCourses() {
+    public List<Course> findAllCourses() {
         return repository.findAll();
     }
 
     @Override
-    public CourseEntity getByHandle(String handle) {
+    public Course getByHandle(String handle) {
         return repository.findByHandle(handle)
                 .orElseThrow(() -> new CourseNotFoundException(handle));
     }
 
     @Override
-    public boolean isOwner(Long resourceId, AuthEntity auth) {
+    public boolean isOwner(Long resourceId, Auth auth) {
         return repository.existsByIdAndOwner_Id(resourceId, auth.getId());
     }
 
     @Override
-    public AuthEntity getOwner(Long resourceId) {
-        Optional<CourseEntity> result = repository.findById(resourceId);
+    public Auth getOwner(Long resourceId) {
+        Optional<Course> result = repository.findById(resourceId);
 
         if(result.isEmpty())
             throw new CourseNotFoundException(resourceId);
@@ -159,13 +159,13 @@ public class CourseService implements HandleService<CourseEntity>, OwnershipServ
         return result.get().getOwner();
     }
 
-    public CourseEntity addEditor(Long courseId, AuthEntity initiator, UUID targetId) {
-        CourseEntity course = findCourseById(courseId);
+    public Course addEditor(Long courseId, Auth initiator, UUID targetId) {
+        Course course = findCourseById(courseId);
 
         if(initiator.getRole() != Role.ADMIN && !course.getOwner().equals(initiator))
             throw new CourseNotOwnedByUserException(initiator.getId());
 
-        AuthEntity target = authRepository.findById(targetId)
+        Auth target = authRepository.findById(targetId)
                 .orElseThrow(() -> new UserNotFoundException(targetId));
 
         course.addEditor(target);
@@ -175,13 +175,13 @@ public class CourseService implements HandleService<CourseEntity>, OwnershipServ
     }
 
 
-    public CourseEntity removeEditor(Long courseId, AuthEntity initiator, UUID targetId) {
-        CourseEntity course = findCourseById(courseId);
+    public Course removeEditor(Long courseId, Auth initiator, UUID targetId) {
+        Course course = findCourseById(courseId);
 
         if(initiator.getRole() != Role.ADMIN && !course.getOwner().equals(initiator))
             throw new CourseNotOwnedByUserException(initiator.getId());
 
-        AuthEntity target = authRepository.findById(targetId)
+        Auth target = authRepository.findById(targetId)
                 .orElseThrow(() -> new UserNotFoundException(targetId));
 
         course.removeEditor(target);
@@ -190,3 +190,4 @@ public class CourseService implements HandleService<CourseEntity>, OwnershipServ
         return repository.save(course);
     }
 }
+

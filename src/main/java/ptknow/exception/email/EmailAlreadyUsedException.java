@@ -5,3 +5,4 @@ public class EmailAlreadyUsedException extends RuntimeException {
         super(String.format("Почта %s уже используется", email));
     }
 }
+

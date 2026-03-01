@@ -1,8 +1,8 @@
-package ptknow.entity.course;
+package ptknow.model.course;
 
-import ptknow.entity.auth.AuthEntity;
-import ptknow.entity.file.FileEntity;
-import ptknow.entity.lesson.LessonEntity;
+import ptknow.model.auth.Auth;
+import ptknow.model.file.File;
+import ptknow.model.lesson.Lesson;
 import ptknow.exception.credentials.InvalidCredentialsException;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,7 +19,7 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class CourseEntity {
+public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_id_generator")
@@ -46,11 +46,11 @@ public class CourseEntity {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     @Builder.Default
-    Set<CourseTagEntity> courseTags = new HashSet<>();
+    Set<CourseTag> courseTags = new HashSet<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    Set<LessonEntity> lessons = new HashSet<>();
+    Set<Lesson> lessons = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -59,12 +59,12 @@ public class CourseEntity {
             inverseJoinColumns = @JoinColumn(name = "editor_id")
     )
     @Builder.Default
-    Set<AuthEntity> editors = new HashSet<>();
+    Set<Auth> editors = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
     @Getter
-    AuthEntity owner;
+    Auth owner;
 
     @Setter
     @Column(nullable = false)
@@ -75,7 +75,7 @@ public class CourseEntity {
     @JoinColumn(name = "preview_id")
     @Getter
     @Setter
-    FileEntity preview;
+    File preview;
 
     @PrePersist
     @PreUpdate
@@ -88,27 +88,28 @@ public class CourseEntity {
             throw new InvalidCredentialsException("Course must be open to at least 1 person");
     }
 
-    public Set<LessonEntity> getLessons() {
+    public Set<Lesson> getLessons() {
         return Collections.unmodifiableSet(lessons);
     }
 
-    public Set<CourseTagEntity> getCourseTags() {
+    public Set<CourseTag> getCourseTags() {
         return Collections.unmodifiableSet(courseTags);
     }
 
-    public boolean hasEditor(AuthEntity e) {
+    public boolean hasEditor(Auth e) {
         return editors.contains(e);
     }
 
-    public Set<AuthEntity> getEditors() {
+    public Set<Auth> getEditors() {
         return Collections.unmodifiableSet(editors);
     }
 
-    public boolean addEditor(AuthEntity e) {
+    public boolean addEditor(Auth e) {
         return e.addEditCourse(this) && editors.add(e);
     }
 
-    public boolean removeEditor(AuthEntity e) {
+    public boolean removeEditor(Auth e) {
         return e.removeEditCourse(this) && editors.remove(e);
     }
 }
+

@@ -1,6 +1,7 @@
-package ptknow.entity.lesson;
+package ptknow.model.lesson;
 
 public enum LessonType {
 
     LECTURE, PRACTICE
 }
+

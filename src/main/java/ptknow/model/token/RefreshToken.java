@@ -1,6 +1,6 @@
-package ptknow.entity.token;
+package ptknow.model.token;
 
-import ptknow.entity.auth.AuthEntity;
+import ptknow.model.auth.Auth;
 import ptknow.exception.credentials.InvalidCredentialsException;
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,7 +15,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class RefreshTokenEntity {
+public class RefreshToken {
 
     @Id
     @Column(unique = true, nullable = false, updatable = false)
@@ -28,7 +28,7 @@ public class RefreshTokenEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
-    AuthEntity user;
+    Auth user;
 
     @Column(nullable = false, updatable = false)
     Instant expireDate;
@@ -49,3 +49,4 @@ public class RefreshTokenEntity {
     }
 
 }
+

@@ -4,3 +4,4 @@ public interface HandleService<V> {
 
     V getByHandle(String handle);
 }
+

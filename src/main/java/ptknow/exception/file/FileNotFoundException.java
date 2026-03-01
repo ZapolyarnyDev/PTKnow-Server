@@ -5,3 +5,4 @@ public class FileNotFoundException extends RuntimeException {
         super(message);
     }
 }
+

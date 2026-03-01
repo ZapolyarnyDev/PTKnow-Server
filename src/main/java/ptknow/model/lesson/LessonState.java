@@ -1,4 +1,4 @@
-package ptknow.entity.lesson;
+package ptknow.model.lesson;
 
 public enum LessonState {
 
@@ -7,3 +7,4 @@ public enum LessonState {
     CANCELLED,
     FINISHED
 }
+

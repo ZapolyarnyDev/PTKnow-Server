@@ -2,7 +2,7 @@ package ptknow.api.profile;
 
 import ptknow.dto.profile.ProfileResponseDTO;
 import ptknow.dto.profile.ProfileUpdateDTO;
-import ptknow.entity.auth.AuthEntity;
+import ptknow.model.auth.Auth;
 import ptknow.mapper.profile.ProfileMapper;
 import ptknow.service.profile.ProfileService;
 import jakarta.validation.Valid;
@@ -26,7 +26,7 @@ public class ProfileController {
     ProfileMapper profileMapper;
 
     @GetMapping
-    public ResponseEntity<ProfileResponseDTO> getMyProfile(@AuthenticationPrincipal AuthEntity user) {
+    public ResponseEntity<ProfileResponseDTO> getMyProfile(@AuthenticationPrincipal Auth user) {
         var profile = profileService.getProfile(user.getId());
         var dto = profileMapper.toDto(profile);
         return ResponseEntity.ok(dto);
@@ -41,7 +41,7 @@ public class ProfileController {
 
     @PostMapping("/avatar")
     public ResponseEntity<ProfileResponseDTO> updateAvatar(
-            @AuthenticationPrincipal AuthEntity user,
+            @AuthenticationPrincipal Auth user,
             @RequestParam("file") MultipartFile file
     ) throws IOException {
         var updatedProfile = profileService.updateAvatar(user.getId(), file);
@@ -51,7 +51,7 @@ public class ProfileController {
 
     @PutMapping
     public ResponseEntity<ProfileResponseDTO> updateMyProfile(
-            @AuthenticationPrincipal AuthEntity user,
+            @AuthenticationPrincipal Auth user,
             @Valid @RequestBody ProfileUpdateDTO dto
     ) {
         var updated = profileService.update(user.getId(), dto);
@@ -59,3 +59,4 @@ public class ProfileController {
         return ResponseEntity.ok(updatedDto);
     }
 }
+

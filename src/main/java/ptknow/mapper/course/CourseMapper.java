@@ -1,8 +1,8 @@
 package ptknow.mapper.course;
 
 import ptknow.dto.course.CourseDTO;
-import ptknow.entity.course.CourseEntity;
-import ptknow.entity.course.CourseTagEntity;
+import ptknow.model.course.Course;
+import ptknow.model.course.CourseTag;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -16,10 +16,10 @@ public interface CourseMapper {
 
     @Mapping(source = "courseTags", target = "tags")
     @Mapping(source = "preview.id", target = "previewUrl", qualifiedByName = "mapPreviewIdToUrl")
-    CourseDTO courseToDTO(CourseEntity entity);
+    CourseDTO courseToDTO(Course entity);
 
-    default List<String> mapCourseTags(Set<CourseTagEntity> tags) {
-        return tags.stream().map(CourseTagEntity::getTagName).toList();
+    default List<String> mapCourseTags(Set<CourseTag> tags) {
+        return tags.stream().map(CourseTag::getTagName).toList();
     }
 
     @Named("mapPreviewIdToUrl")
@@ -28,3 +28,4 @@ public interface CourseMapper {
         return "/v0/files/" + previewId;
     }
 }
+

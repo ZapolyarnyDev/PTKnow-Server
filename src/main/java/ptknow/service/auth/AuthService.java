@@ -2,7 +2,7 @@ package ptknow.service.auth;
 
 import ptknow.dto.auth.LoginDTO;
 import ptknow.dto.auth.RegistrationDTO;
-import ptknow.entity.auth.AuthEntity;
+import ptknow.model.auth.Auth;
 import ptknow.exception.email.EmailAlreadyUsedException;
 import ptknow.exception.email.EmailNotFoundException;
 import ptknow.exception.credentials.InvalidCredentialsException;
@@ -29,13 +29,13 @@ public class AuthService implements UserDetailsService {
     ProfileService profileService;
 
     @Transactional
-    public AuthEntity register(String fullName, String email, String password) {
+    public Auth register(String fullName, String email, String password) {
         if(repository.existsByEmail(email))
             throw new EmailAlreadyUsedException(email);
 
         String hashedPassword = passwordEncoder.encode(password);
 
-        var entity = AuthEntity.builder()
+        var entity = Auth.builder()
                 .email(email)
                 .password(hashedPassword)
                 .build();
@@ -47,12 +47,12 @@ public class AuthService implements UserDetailsService {
     }
 
     @Transactional
-    public AuthEntity register(RegistrationDTO registrationDTO) {
+    public Auth register(RegistrationDTO registrationDTO) {
         return register(registrationDTO.fullName(), registrationDTO.email(), registrationDTO.password());
     }
 
     @Transactional
-    public AuthEntity authenticate(String email, String password) {
+    public Auth authenticate(String email, String password) {
         var entity = loadUserByUsername(email);
 
         if(!passwordEncoder.matches(password, entity.getPassword()))
@@ -63,14 +63,15 @@ public class AuthService implements UserDetailsService {
     }
 
     @Transactional
-    public AuthEntity authenticate(LoginDTO loginDTO) {
+    public Auth authenticate(LoginDTO loginDTO) {
         return authenticate(loginDTO.email(), loginDTO.password());
     }
 
     @Override
-    public AuthEntity loadUserByUsername(String email) throws UsernameNotFoundException {
+    public Auth loadUserByUsername(String email) throws UsernameNotFoundException {
         return repository.findByEmail(email)
                 .orElseThrow(() -> new EmailNotFoundException(email));
     }
 
 }
+

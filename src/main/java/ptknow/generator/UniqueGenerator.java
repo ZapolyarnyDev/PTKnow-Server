@@ -7,3 +7,4 @@ public interface UniqueGenerator<T> {
 
     T generate(Function<T, Boolean> existChecking);
 }
+

@@ -1,7 +1,7 @@
-package ptknow.entity.auth;
+package ptknow.model.auth;
 
-import ptknow.entity.course.CourseEntity;
-import ptknow.entity.profile.ProfileEntity;
+import ptknow.model.course.Course;
+import ptknow.model.profile.Profile;
 import ptknow.exception.credentials.InvalidCredentialsException;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,7 +17,7 @@ import java.util.*;
 @Table(name = "auth_data")
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthEntity implements UserDetails {
+public class Auth implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -52,16 +52,16 @@ public class AuthEntity implements UserDetails {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @Getter
-    private ProfileEntity profile;
+    private Profile profile;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
-    Set<CourseEntity> ownedCourses = new HashSet<>();
+    Set<Course> ownedCourses = new HashSet<>();
 
     @ManyToMany(mappedBy = "editors", fetch = FetchType.LAZY)
-    Set<CourseEntity> editCourses = new HashSet<>();
+    Set<Course> editCourses = new HashSet<>();
 
     @Builder
-    public AuthEntity(String email, String password, Role role) {
+    public Auth(String email, String password, Role role) {
         this.email = email;
         this.password = password;
         this.role = role;
@@ -69,7 +69,7 @@ public class AuthEntity implements UserDetails {
     }
 
     @Builder(builderMethodName = "provideVK")
-    public AuthEntity(String providerId, Role role) {
+    public Auth(String providerId, Role role) {
         this.role = role;
         this.authProvider = AuthProvider.VK;
         this.providerId = providerId;
@@ -130,27 +130,28 @@ public class AuthEntity implements UserDetails {
         return true;
     }
 
-    public Set<CourseEntity> getOwnedCourses() {
+    public Set<Course> getOwnedCourses() {
         return Collections.unmodifiableSet(ownedCourses);
     }
 
-    public boolean addOwnedCourse(CourseEntity e) {
+    public boolean addOwnedCourse(Course e) {
        return ownedCourses.add(e);
     }
 
-    public boolean removeOwnedCourse(CourseEntity e) {
+    public boolean removeOwnedCourse(Course e) {
        return ownedCourses.remove(e);
     }
 
-    public Set<CourseEntity> getEditCourses() {
+    public Set<Course> getEditCourses() {
         return Collections.unmodifiableSet(editCourses);
     }
 
-    public boolean addEditCourse(CourseEntity e) {
+    public boolean addEditCourse(Course e) {
         return editCourses.add(e);
     }
 
-    public boolean removeEditCourse(CourseEntity e) {
+    public boolean removeEditCourse(Course e) {
         return editCourses.remove(e);
     }
 }
+

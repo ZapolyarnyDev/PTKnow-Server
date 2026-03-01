@@ -1,6 +1,6 @@
 package ptknow.repository.profile;
 
-import ptknow.entity.profile.ProfileEntity;
+import ptknow.model.profile.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,8 +8,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ProfileRepository extends JpaRepository<ProfileEntity, UUID> {
-    Optional<ProfileEntity> findByHandle(String handle);
-    Optional<ProfileEntity> findByUserId(UUID userId);
+public interface ProfileRepository extends JpaRepository<Profile, UUID> {
+    Optional<Profile> findByHandle(String handle);
+    Optional<Profile> findByUserId(UUID userId);
     boolean existsByHandle(String handle);
 }
+
