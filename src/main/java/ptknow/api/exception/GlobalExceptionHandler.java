@@ -17,10 +17,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import ptknow.exception.course.CourseAlreadyExists;
-import ptknow.exception.course.CourseTagAlreadyExists;
-import ptknow.exception.course.CourseNotFoundException;
-import ptknow.exception.course.LessonNotFoundException;
+import ptknow.exception.course.*;
 import ptknow.exception.credentials.InvalidCredentialsException;
 import ptknow.exception.email.EmailAlreadyUsedException;
 import ptknow.exception.email.EmailNotFoundException;
@@ -71,6 +68,14 @@ public class GlobalExceptionHandler {
     })
     public ResponseEntity<ApiError> handleBadRequest(Exception ex, HttpServletRequest req) {
         return build(HttpStatus.BAD_REQUEST, "bad_request", req, ex.getMessage());
+    }
+
+    @ExceptionHandler({
+            CourseCannotBeEditByUserException.class,
+            CourseNotOwnedByUserException.class
+    })
+    public ResponseEntity<ApiError> handleForbidden(Exception ex, HttpServletRequest req) {
+        return build(HttpStatus.FORBIDDEN, "forbidden", req, ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

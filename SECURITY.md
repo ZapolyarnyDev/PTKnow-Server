@@ -13,9 +13,9 @@
 
 ## Роли и право владения ресурсом
 
-`OWNER` не является глобальной ролью.
+`OWNER` и `EDITOR`  не является глобальной ролью.
 
-`OWNER` - это контекстное право владения конкретным ресурсом:
+`OWNER` - это контекстное право владения конкретным ресурсом, которое может быть только у автора ресурса:
 
 - `OWNER(profile)` = `profile.userId == currentUser.id`
 - `OWNER(course)` = `course.ownerId == currentUser.id`
@@ -27,6 +27,16 @@
 - пользователь не может иметь глобальную роль `OWNER`
 - ownership должен проверяться в policy/service layer, а не только на уровне controller
 - `ADMIN` имеет доступ ко всем ресурсам независимо от ownership
+
+`EDITOR` - это опциональное контекстное право на изменение конкретного ресурса, которое может быть у нескольких пользователей:
+
+- `EDITOR(course)` = `course.hasEditor(currentUser.id)`
+
+Следствия:
+
+- пользователь не может иметь глобальную роль `EDITOR`
+- право на изменение ресура должно проверяться в policy/service layer, а не только на уровне controller
+- `ADMIN` имеет доступ ко измнению всех ресурсов
 
 ## Переходы ролей
 
@@ -115,8 +125,8 @@ unenroll - отмена записи субъекта на ресурс
 - `POST /v0/course` - `TEACHER`, `ADMIN` - `Не сделано`
 - `GET /v0/course/id/{id}` - `ENROLLED`, `TEACHER`, `ADMIN` - `Нет в доменной модели`
 - `GET /v0/course/handle/{handle}` - аналогично `GET /v0/course/id/{id}` - `Нет в доменной модели`
-- `POST /v0/course/{id}/preview` - `OWNER(course)`, `ADMIN` - `Нет в доменной модели`
-- `DELETE /v0/course/{id}` - `OWNER(course)`, `ADMIN` - `Нет в доменной модели`
+- `POST /v0/course/{id}/preview` - `OWNER(course)`, `EDITOR(course)` , `ADMIN` - `Сделано`
+- `DELETE /v0/course/{id}` - `OWNER(course)`, `ADMIN` - `Сделано`
 
 ### LessonController
 

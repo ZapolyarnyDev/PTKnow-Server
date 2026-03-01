@@ -1,7 +1,10 @@
 package ptknow.api.course;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import ptknow.dto.course.CourseDTO;
 import ptknow.dto.course.CreateCourseDTO;
+import ptknow.entity.auth.AuthEntity;
 import ptknow.entity.course.CourseEntity;
 import ptknow.mapper.course.CourseMapper;
 import ptknow.service.course.CourseService;
@@ -35,11 +38,13 @@ public class CourseController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     public ResponseEntity<CourseDTO> createCourse(
             @Valid @RequestPart("course") CreateCourseDTO dto,
-            @RequestPart(value = "preview", required = false) MultipartFile preview
-    ) throws IOException {
-        CourseEntity course = courseService.publishCourse(dto, preview);
+            @RequestPart(value = "preview", required = false) MultipartFile preview,
+            @AuthenticationPrincipal AuthEntity entity
+            ) throws IOException {
+        CourseEntity course = courseService.publishCourse(dto, entity, preview);
 
         return ResponseEntity.ok(courseMapper.courseToDTO(course));
     }
@@ -57,18 +62,24 @@ public class CourseController {
     }
 
     @PostMapping("/{id}/preview")
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     public ResponseEntity<CourseDTO> updatePreview(
             @PathVariable Long id,
-            @RequestParam("file") MultipartFile file
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal AuthEntity entity
     ) throws IOException {
-        var updatedProfile = courseService.updatePreview(id, file);
+        var updatedProfile = courseService.updatePreview(id, entity, file);
         var dto = courseMapper.courseToDTO(updatedProfile);
         return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
-        courseService.deleteCourseById(id);
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
+    public ResponseEntity<Void> deleteCourse(
+            @PathVariable Long id,
+            @AuthenticationPrincipal AuthEntity entity
+            ) {
+        courseService.deleteCourseById(id, entity);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

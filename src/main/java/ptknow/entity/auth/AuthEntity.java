@@ -1,5 +1,6 @@
 package ptknow.entity.auth;
 
+import ptknow.entity.course.CourseEntity;
 import ptknow.entity.profile.ProfileEntity;
 import ptknow.exception.credentials.InvalidCredentialsException;
 import jakarta.persistence.*;
@@ -10,43 +11,54 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "auth_data")
-@Getter
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Getter
     UUID id;
 
     @Column(updatable = false, unique = true)
+    @Getter
     String email;
 
     @Setter
+    @Getter
     String password;
 
     @Column(nullable = false, updatable = false)
+    @Getter
     Instant registeredAt;
 
     @Enumerated(EnumType.STRING)
+    @Getter
     @Column(nullable = false)
     Role role;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, updatable = false)
+    @Getter
     AuthProvider authProvider;
 
     @Column(updatable = false, unique = true)
+    @Getter
     String providerId;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @Getter
     private ProfileEntity profile;
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    Set<CourseEntity> ownedCourses = new HashSet<>();
+
+    @ManyToMany(mappedBy = "editors", fetch = FetchType.LAZY)
+    Set<CourseEntity> editCourses = new HashSet<>();
 
     @Builder
     public AuthEntity(String email, String password, Role role) {
@@ -70,7 +82,7 @@ public class AuthEntity implements UserDetails {
             registeredAt = Instant.now();
 
         if(role == null)
-            role = Role.USER;
+            role = Role.GUEST;
 
         checkProvidingCredentials();
     }
@@ -116,5 +128,29 @@ public class AuthEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public Set<CourseEntity> getOwnedCourses() {
+        return Collections.unmodifiableSet(ownedCourses);
+    }
+
+    public boolean addOwnedCourse(CourseEntity e) {
+       return ownedCourses.add(e);
+    }
+
+    public boolean removeOwnedCourse(CourseEntity e) {
+       return ownedCourses.remove(e);
+    }
+
+    public Set<CourseEntity> getEditCourses() {
+        return Collections.unmodifiableSet(editCourses);
+    }
+
+    public boolean addEditCourse(CourseEntity e) {
+        return editCourses.add(e);
+    }
+
+    public boolean removeEditCourse(CourseEntity e) {
+        return editCourses.remove(e);
     }
 }

@@ -52,8 +52,23 @@ public class CourseEntity {
     @Builder.Default
     Set<LessonEntity> lessons = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "course_editors_mapping",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "editor_id")
+    )
+    @Builder.Default
+    Set<AuthEntity> editors = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", nullable = false)
+    @Getter
+    AuthEntity owner;
+
     @Setter
     @Column(nullable = false)
+    @Getter
     int maxUsersAmount = 10;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -81,4 +96,19 @@ public class CourseEntity {
         return Collections.unmodifiableSet(courseTags);
     }
 
+    public boolean hasEditor(AuthEntity e) {
+        return editors.contains(e);
+    }
+
+    public Set<AuthEntity> getEditors() {
+        return Collections.unmodifiableSet(editors);
+    }
+
+    public boolean addEditor(AuthEntity e) {
+        return e.addEditCourse(this) && editors.add(e);
+    }
+
+    public boolean removeEditor(AuthEntity e) {
+        return e.removeEditCourse(this) && editors.remove(e);
+    }
 }
