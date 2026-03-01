@@ -8,12 +8,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "courses")
-@Getter
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
@@ -25,13 +25,17 @@ public class CourseEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_id_generator")
     @SequenceGenerator(name = "course_id_generator", sequenceName = "course_sequence", allocationSize = 1)
     @EqualsAndHashCode.Include
+    @Getter
     Long id;
 
     @Column(unique = true, nullable = false)
+    @Getter
     String name;
 
+    @Getter
     String description;
 
+    @Getter
     @Column(unique = true, nullable = false)
     String handle;
 
@@ -68,4 +72,13 @@ public class CourseEntity {
         if(maxUsersAmount <= 0)
             throw new InvalidCredentialsException("Course must be open to at least 1 person");
     }
+
+    public Set<LessonEntity> getLessons() {
+        return Collections.unmodifiableSet(lessons);
+    }
+
+    public Set<CourseTagEntity> getCourseTags() {
+        return Collections.unmodifiableSet(courseTags);
+    }
+
 }
