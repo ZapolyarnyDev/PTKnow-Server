@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.zapolyarnydev"
-version = "0.5.0-SNAPSHOT"
+version = "0.5.0"
 
 java {
 	toolchain {
