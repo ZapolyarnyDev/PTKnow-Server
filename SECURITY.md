@@ -125,8 +125,8 @@ unenroll - отмена записи субъекта на ресурс
 - `POST /v0/course` - `TEACHER`, `ADMIN` - `Не сделано`
 - `GET /v0/course/id/{id}` - `ENROLLED`, `TEACHER`, `ADMIN` - `Нет в доменной модели`
 - `GET /v0/course/handle/{handle}` - аналогично `GET /v0/course/id/{id}` - `Нет в доменной модели`
-- `POST /v0/course/{id}/preview` - `OWNER(course)`, `EDITOR(course)` , `ADMIN` - `Сделано`
-- `DELETE /v0/course/{id}` - `OWNER(course)`, `ADMIN` - `Сделано`
+- `POST /v0/course/{id}/preview` - `OWNER(course)`, `EDITOR(course)` , `ADMIN` - `Частично сделано`
+- `DELETE /v0/course/{id}` - `OWNER(course)`, `ADMIN` - `Частично сделано`
 
 ### LessonController
 
