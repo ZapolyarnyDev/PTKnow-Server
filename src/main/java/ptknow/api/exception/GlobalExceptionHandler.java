@@ -88,7 +88,7 @@ public class GlobalExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
 
-        return build(HttpStatus.BAD_REQUEST, "validation_failed", req, "Validation failed", errors);
+        return build(req, "Validation failed", errors);
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
@@ -118,9 +118,9 @@ public class GlobalExceptionHandler {
                 .body(ApiError.of(status, code, req.getRequestURI(), defaultMessage(status, message)));
     }
 
-    private ResponseEntity<ApiError> build(HttpStatus status, String code, HttpServletRequest req, String message, Map<String, String> fieldErrors) {
-        return ResponseEntity.status(status)
-                .body(ApiError.of(status, code, req.getRequestURI(), defaultMessage(status, message), fieldErrors));
+    private ResponseEntity<ApiError> build(HttpServletRequest req, String message, Map<String, String> fieldErrors) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiError.of(HttpStatus.BAD_REQUEST, "validation_failed", req.getRequestURI(), defaultMessage(HttpStatus.BAD_REQUEST, message), fieldErrors));
     }
 
     private String defaultMessage(HttpStatus status, String message) {
