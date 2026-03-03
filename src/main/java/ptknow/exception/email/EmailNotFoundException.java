@@ -2,7 +2,6 @@ package ptknow.exception.email;
 
 public class EmailNotFoundException extends RuntimeException {
     public EmailNotFoundException(String email) {
-        super(String.format("Пользователь с почтой %s не найден", email));
+        super(String.format("User with email %s not found", email));
     }
 }
-

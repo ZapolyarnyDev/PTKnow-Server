@@ -56,7 +56,7 @@ public class AuthService implements UserDetailsService {
         var entity = loadUserByUsername(email);
 
         if(!passwordEncoder.matches(password, entity.getPassword()))
-            throw new InvalidCredentialsException("Неверный логин или пароль");
+            throw new InvalidCredentialsException("Invalid email or password");
 
         log.info("User log in successfully. Email: {}", email);
         return entity;
@@ -74,4 +74,3 @@ public class AuthService implements UserDetailsService {
     }
 
 }
-
