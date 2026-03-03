@@ -9,7 +9,7 @@ version = "0.5.0-SNAPSHOT"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+		languageVersion = JavaLanguageVersion.of(25)
 	}
 }
 
@@ -48,6 +48,11 @@ dependencies {
 
 tasks.bootJar {
 	archiveFileName.set("app.jar")
+}
+
+tasks.withType<JavaCompile> {
+	options.release.set(25)
+	options.encoding = "UTF-8"
 }
 
 tasks.withType<Test> {

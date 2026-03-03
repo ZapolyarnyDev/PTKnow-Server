@@ -1,4 +1,4 @@
-FROM gradle:8.12.0-jdk AS builder
+FROM gradle:9.1.0-jdk AS builder
 
 WORKDIR /build
 
@@ -8,7 +8,7 @@ COPY gradle ./gradle
 
 RUN gradle bootJar --no-daemon
 
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:25-jre
 
 ARG EXPOSE_PORT
 ENV SERVER_PORT=${EXPOSE_PORT}
