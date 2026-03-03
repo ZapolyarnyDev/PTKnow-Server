@@ -1,7 +1,7 @@
 plugins {
 	java
-	id("org.springframework.boot") version "3.5.5"
-	id("io.spring.dependency-management") version "1.1.7"
+	alias(libs.plugins.spring.boot)
+	alias(libs.plugins.spring.dependency.management)
 }
 
 group = "io.github.zapolyarnydev"
@@ -24,26 +24,26 @@ repositories {
 }
 
 dependencies {
-	compileOnly("org.projectlombok:lombok")
-	annotationProcessor("org.projectlombok:lombok")
+	compileOnly(libs.lombok)
+	annotationProcessor(libs.lombok)
 
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-validation")
-	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation(libs.spring.boot.starter.data.jpa)
+	implementation(libs.spring.boot.starter.validation)
+	implementation(libs.spring.boot.starter.web)
 
-	runtimeOnly("org.postgresql:postgresql")
+	runtimeOnly(libs.postgresql)
 
-	implementation("org.springframework.boot:spring-boot-starter-security")
-	implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+	implementation(libs.spring.boot.starter.security)
+	implementation(libs.spring.boot.starter.oauth2.client)
+	implementation(libs.spring.boot.starter.oauth2.resource.server)
 
-	compileOnly("org.mapstruct:mapstruct:1.5.5.Final")
-	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+	compileOnly(libs.mapstruct)
+	annotationProcessor(libs.mapstruct.processor)
 
-	implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
+	implementation(libs.jnanoid)
 
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	testImplementation(libs.spring.boot.starter.test)
+	testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 tasks.bootJar {
