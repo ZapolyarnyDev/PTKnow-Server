@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.zapolyarnydev"
-version = "0.5.0"
+version = "0.6.0"
 
 java {
 	toolchain {
@@ -28,6 +28,7 @@ dependencies {
 	annotationProcessor(libs.lombok)
 
 	implementation(libs.spring.boot.starter.data.jpa)
+	implementation(libs.spring.boot.starter.json)
 	implementation(libs.spring.boot.starter.validation)
 	implementation(libs.spring.boot.starter.web)
 
@@ -44,6 +45,7 @@ dependencies {
 
 	testImplementation(libs.spring.boot.starter.test)
 	testRuntimeOnly(libs.junit.platform.launcher)
+	testRuntimeOnly(libs.h2)
 }
 
 tasks.bootJar {
