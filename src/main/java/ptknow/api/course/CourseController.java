@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/v0/course")
@@ -81,6 +82,28 @@ public class CourseController {
             ) {
         courseService.deleteCourseById(id, entity);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PostMapping("/{id}/editors/{userId}")
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
+    public ResponseEntity<Void> addCourseEditor(
+            @PathVariable Long id,
+            @PathVariable UUID userId,
+            @AuthenticationPrincipal Auth entity
+            ) {
+        courseService.addEditor(id, entity, userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}/editors/{userId}")
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
+    public ResponseEntity<Void> removeCourseEditor(
+            @PathVariable Long id,
+            @PathVariable UUID userId,
+            @AuthenticationPrincipal Auth entity
+    ) {
+        courseService.removeEditor(id, entity, userId);
+        return ResponseEntity.noContent().build();
     }
 }
 
