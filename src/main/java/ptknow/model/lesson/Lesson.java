@@ -1,5 +1,6 @@
 package ptknow.model.lesson;
 
+import ptknow.model.auth.Auth;
 import ptknow.model.course.Course;
 import ptknow.exception.credentials.InvalidCredentialsException;
 import jakarta.persistence.*;
@@ -46,14 +47,19 @@ public class Lesson {
     @JoinColumn(name = "course_id", nullable = false)
     Course course;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", nullable = false)
+    Auth owner;
+
     @Builder
-    public Lesson(String name, String description, Instant beginAt, Instant endsAt, Course course, LessonType lessonType) {
+    public Lesson(String name, String description, Instant beginAt, Instant endsAt, Course course, LessonType lessonType, Auth owner) {
         this.name = name;
         this.description = description;
         this.beginAt = beginAt;
         this.endsAt = endsAt;
         this.course = course;
         this.type = lessonType;
+        this.owner = owner;
     }
 
     @PrePersist

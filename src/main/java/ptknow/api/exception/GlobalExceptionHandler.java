@@ -22,6 +22,9 @@ import ptknow.exception.credentials.InvalidCredentialsException;
 import ptknow.exception.email.EmailAlreadyUsedException;
 import ptknow.exception.email.EmailNotFoundException;
 import ptknow.exception.file.FileNotFoundException;
+import ptknow.exception.lesson.LessonCannotBeCreatedException;
+import ptknow.exception.lesson.LessonNotFoundException;
+import ptknow.exception.lesson.LessonNotOwnedException;
 import ptknow.exception.token.InvalidTokenException;
 import ptknow.exception.token.TokenNotFoundException;
 import ptknow.exception.user.UserNotFoundException;
@@ -73,7 +76,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({
             CourseCannotBeEditByUserException.class,
-            CourseNotOwnedByUserException.class
+            CourseNotOwnedByUserException.class,
+            LessonNotOwnedException.class,
+            LessonCannotBeCreatedException.class
     })
     public ResponseEntity<ApiError> handleForbidden(Exception ex, HttpServletRequest req) {
         return build(HttpStatus.FORBIDDEN, "forbidden", req, ex.getMessage());

@@ -1,6 +1,7 @@
 package ptknow.model.auth;
 
 import ptknow.model.course.Course;
+import ptknow.model.lesson.Lesson;
 import ptknow.model.profile.Profile;
 import ptknow.exception.credentials.InvalidCredentialsException;
 import jakarta.persistence.*;
@@ -59,6 +60,9 @@ public class Auth implements UserDetails {
 
     @ManyToMany(mappedBy = "editors", fetch = FetchType.LAZY)
     Set<Course> editCourses = new HashSet<>();
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    Set<Lesson> ownedLessons = new HashSet<>();
 
     @Builder
     public Auth(String email, String password, Role role) {
@@ -134,12 +138,25 @@ public class Auth implements UserDetails {
         return Collections.unmodifiableSet(ownedCourses);
     }
 
+    public boolean addOwnedLesson(Lesson lesson) {
+       return ownedLessons.add(lesson);
+    }
+
+    public boolean removeOwnedLesson(Lesson lesson) {
+       return ownedLessons.remove(lesson);
+    }
+
+
+    public Set<Lesson> getOwnedLessons() {
+        return Collections.unmodifiableSet(ownedLessons);
+    }
+
     public boolean addOwnedCourse(Course e) {
-       return ownedCourses.add(e);
+        return ownedCourses.add(e);
     }
 
     public boolean removeOwnedCourse(Course e) {
-       return ownedCourses.remove(e);
+        return ownedCourses.remove(e);
     }
 
     public Set<Course> getEditCourses() {

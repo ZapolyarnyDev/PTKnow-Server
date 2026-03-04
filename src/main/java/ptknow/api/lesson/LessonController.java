@@ -1,8 +1,11 @@
 package ptknow.api.lesson;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import ptknow.dto.lesson.CreateLessonDTO;
 import ptknow.dto.lesson.LessonDTO;
 import ptknow.mapper.lesson.LessonMapper;
+import ptknow.model.auth.Auth;
 import ptknow.service.lesson.LessonService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -24,11 +27,13 @@ public class LessonController {
     LessonMapper lessonMapper;
 
     @PostMapping("/{courseId}")
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     public ResponseEntity<LessonDTO> createLesson(
             @PathVariable Long courseId,
-            @Valid @RequestBody CreateLessonDTO dto
+            @Valid @RequestBody CreateLessonDTO dto,
+            @AuthenticationPrincipal Auth auth
     ) {
-        var lesson = lessonService.createLesson(courseId, dto);
+        var lesson = lessonService.createLesson(courseId, auth, dto);
         return ResponseEntity.ok(lessonMapper.toDTO(lesson));
     }
 
@@ -47,8 +52,11 @@ public class LessonController {
     }
 
     @DeleteMapping("/{lessonId}")
-    public ResponseEntity<Void> deleteLesson(@PathVariable Long lessonId) {
-        lessonService.deleteById(lessonId);
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
+    public ResponseEntity<Void> deleteLesson(
+            @PathVariable Long lessonId,
+            @AuthenticationPrincipal Auth auth) {
+        lessonService.deleteById(lessonId, auth);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

@@ -1,10 +1,15 @@
 package ptknow.service.lesson;
 
 import ptknow.dto.lesson.CreateLessonDTO;
+import ptknow.exception.lesson.LessonCannotBeCreatedException;
+import ptknow.exception.lesson.LessonNotOwnedException;
+import ptknow.model.auth.Auth;
+import ptknow.model.auth.Role;
 import ptknow.model.course.Course;
 import ptknow.model.lesson.Lesson;
-import ptknow.exception.course.LessonNotFoundException;
+import ptknow.exception.lesson.LessonNotFoundException;
 import ptknow.repository.lesson.LessonRepository;
+import ptknow.service.OwnershipService;
 import ptknow.service.course.CourseService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +22,17 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class LessonService {
+public class LessonService implements OwnershipService<Long> {
 
     LessonRepository lessonRepository;
     CourseService courseService;
 
     @Transactional
-    public Lesson createLesson(Long courseId, CreateLessonDTO dto) {
+    public Lesson createLesson(Long courseId, Auth initiator, CreateLessonDTO dto) throws LessonCannotBeCreatedException {
         Course course = courseService.findCourseById(courseId);
+
+        if (!courseService.canEdit(course, initiator))
+            throw new LessonCannotBeCreatedException(initiator.getId());
 
         Lesson entity = Lesson.builder()
                 .name(dto.name())
@@ -33,7 +41,10 @@ public class LessonService {
                 .endsAt(dto.endsAt())
                 .course(course)
                 .lessonType(dto.type())
+                .owner(initiator)
                 .build();
+
+        initiator.addOwnedLesson(entity);
 
         return lessonRepository.save(entity);
     }
@@ -50,9 +61,35 @@ public class LessonService {
     }
 
     @Transactional
-    public void deleteById(Long id) {
+    public void deleteById(Long id, Auth initiator) throws LessonNotOwnedException {
         Lesson lesson = findById(id);
+
+        if (!canDelete(lesson, initiator))
+            throw new LessonNotOwnedException(initiator.getId());
+
         lessonRepository.delete(lesson);
+    }
+
+    @Override
+    public boolean isOwner(Long resourceId, Auth auth) {
+        return lessonRepository.existsByIdAndOwner_Id(resourceId, auth.getId());
+    }
+
+    @Override
+    public Auth getOwner(Long resourceId) {
+        return findById(resourceId).getOwner();
+    }
+
+    public boolean canEdit(Lesson lesson, Auth auth) {
+        return auth.getRole() == Role.ADMIN ||
+                lesson.getOwner().equals(auth) ||
+                courseService.canEdit(lesson.getCourse(), auth);
+    }
+
+    public boolean canDelete(Lesson lesson, Auth auth) {
+        return auth.getRole() == Role.ADMIN ||
+                lesson.getOwner().equals(auth) ||
+                lesson.getCourse().getOwner().equals(auth);
     }
 }
 

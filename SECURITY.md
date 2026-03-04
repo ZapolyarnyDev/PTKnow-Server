@@ -19,7 +19,7 @@
 
 - `OWNER(profile)` = `profile.userId == currentUser.id`
 - `OWNER(course)` = `course.ownerId == currentUser.id`
-- `OWNER(lesson)` = `lesson.course.ownerId == currentUser.id`
+- `OWNER(lesson)` = `lesson.ownerId == currentUser.id`
 - `OWNER(file)` = файл принадлежит профилю, курсу или уроку, владельцем которого является текущий пользователь
 
 Следствия:
@@ -130,10 +130,10 @@ unenroll - отмена записи субъекта на ресурс
 
 ### LessonController
 
-- `POST /v0/lessons/{courseId}` - `OWNER(course)`, `ADMIN` - `Нет в доменной модели`
+- `POST /v0/lessons/{courseId}` - `OWNER(course)`, `EDITOR(course)`, `ADMIN` - `Нет в доменной модели`
 - `GET /v0/lessons/{lessonId}` - `ENROLLED`, `TEACHER`, `ADMIN` - `Нет в доменной модели`
 - `GET /v0/lessons/course/{courseId}` - `ENROLLED`, `TEACHER`, `ADMIN` - `Нет в доменной модели`
-- `DELETE /v0/lessons/{lessonId}` - `OWNER(lesson)`, `ADMIN` - `Нет в доменной модели`
+- `DELETE /v0/lessons/{lessonId}` - `OWNER(lesson)`, `OWNER(course)`, `ADMIN` - `Нет в доменной модели`
 
 ## Матрица доступа: потенциально необходимые endpoint-ы
 
