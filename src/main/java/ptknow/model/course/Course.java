@@ -69,6 +69,7 @@ public class Course {
     @Setter
     @Column(nullable = false)
     @Getter
+    @Builder.Default
     int maxUsersAmount = 10;
 
     @OneToOne(fetch = FetchType.LAZY)
