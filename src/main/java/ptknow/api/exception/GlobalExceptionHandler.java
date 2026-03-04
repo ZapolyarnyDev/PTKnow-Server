@@ -28,6 +28,7 @@ import ptknow.exception.user.UserNotFoundException;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @Slf4j
@@ -93,7 +94,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ApiError> handleMaxUploadSize(MaxUploadSizeExceededException ex, HttpServletRequest req) {
-        return build(HttpStatus.PAYLOAD_TOO_LARGE, "payload_too_large", req, ex.getMessage());
+        return build(HttpStatus.CONTENT_TOO_LARGE, "payload_too_large", req, ex.getMessage());
     }
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -125,10 +126,11 @@ public class GlobalExceptionHandler {
 
     private String defaultMessage(HttpStatus status, String message) {
         if (message == null || message.isBlank()) {
-            return status.getReasonPhrase();
+            return status.name()
+                    .toLowerCase(Locale.ROOT)
+                    .replace('_', ' ');
         }
 
         return message;
     }
 }
-
