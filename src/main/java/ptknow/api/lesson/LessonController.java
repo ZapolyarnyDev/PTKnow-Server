@@ -1,4 +1,4 @@
-package ptknow.api.course;
+package ptknow.api.lesson;
 
 import ptknow.dto.lesson.CreateLessonDTO;
 import ptknow.dto.lesson.LessonDTO;

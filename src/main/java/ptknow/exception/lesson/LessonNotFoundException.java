@@ -1,4 +1,4 @@
-package ptknow.exception.course;
+package ptknow.exception.lesson;
 
 public class LessonNotFoundException extends RuntimeException {
     public LessonNotFoundException(Long id) {
