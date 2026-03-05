@@ -166,9 +166,9 @@ unenroll - отмена записи субъекта на ресурс
 
 ### Course enrollment
 
-- `POST /v0/course/{id}/enroll` - `GUEST`, `STUDENT` - `Нет в доменной модели`
-- `DELETE /v0/course/{id}/enroll` - `ENROLLED(*)` - `Нет в доменной модели`
-- `GET /v0/course/{id}/members` - `ENROLLED(GUEST|STUDENT)`, `OWNER(course)`, `EDITOR(course)`, `ADMIN` - `Нет в доменной модели`
+- `POST /v0/course/{id}/enroll` - `GUEST`, `STUDENT` - `сделано`
+- `DELETE /v0/course/{id}/enroll` - `ENROLLED(*)` - `сделано`
+- `GET /v0/course/{id}/members` - `ENROLLED(GUEST|STUDENT)`, `OWNER(course)`, `EDITOR(course)`, `ADMIN` - `сделано`
 
 ### Lesson CRUD
 

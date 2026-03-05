@@ -23,6 +23,7 @@ import ptknow.exception.credentials.InvalidCredentialsException;
 import ptknow.exception.email.EmailAlreadyUsedException;
 import ptknow.exception.email.EmailNotFoundException;
 import ptknow.exception.enrollment.AlreadyEnrolledException;
+import ptknow.exception.enrollment.NotAllowedToSeeCourseMembersException;
 import ptknow.exception.enrollment.UserNotEnrollableException;
 import ptknow.exception.file.FileNotFoundException;
 import ptknow.exception.lesson.LessonCannotBeCreatedException;
@@ -74,8 +75,7 @@ public class GlobalExceptionHandler {
             ConstraintViolationException.class,
             HandlerMethodValidationException.class,
             MultipartException.class,
-            CourseIsFullException.class,
-            DataIntegrityViolationException.class
+            CourseIsFullException.class
     })
     public ResponseEntity<ApiError> handleBadRequest(Exception ex, HttpServletRequest req) {
         return build(HttpStatus.BAD_REQUEST, "bad_request", req, ex.getMessage());
@@ -86,7 +86,8 @@ public class GlobalExceptionHandler {
             CourseNotOwnedByUserException.class,
             LessonNotOwnedException.class,
             LessonCannotBeCreatedException.class,
-            UserNotEnrollableException.class
+            UserNotEnrollableException.class,
+            NotAllowedToSeeCourseMembersException.class
     })
     public ResponseEntity<ApiError> handleForbidden(Exception ex, HttpServletRequest req) {
         return build(HttpStatus.FORBIDDEN, "forbidden", req, ex.getMessage());
