@@ -18,6 +18,7 @@ import ptknow.repository.enrollment.EnrollmentRepository;
 import ptknow.service.course.CourseService;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -90,5 +91,15 @@ public class EnrollmentService {
     @Transactional
     public void unenroll(Auth auth, Long courseId) {
         repository.deleteByUser_IdAndCourse_Id(auth.getId(), courseId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Enrollment> findAllByCourse(Long courseId) {
+        return repository.findAllByCourse_Id(courseId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Enrollment> findAllByUser(Long userId) {
+        return repository.findAllByUser_Id(userId);
     }
 }
