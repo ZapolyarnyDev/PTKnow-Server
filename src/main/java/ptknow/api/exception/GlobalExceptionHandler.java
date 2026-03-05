@@ -59,8 +59,7 @@ public class GlobalExceptionHandler {
             CourseNotFoundException.class,
             LessonNotFoundException.class,
             EmailNotFoundException.class,
-            NoHandlerFoundException.class,
-            CourseNotFoundException.class
+            NoHandlerFoundException.class
     })
     public ResponseEntity<ApiError> handleNotFound(Exception ex, HttpServletRequest req) {
         return build(HttpStatus.NOT_FOUND, "resource_not_found", req, ex.getMessage());
