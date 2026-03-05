@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ptknow.exception.course.CourseIsFullException;
 import ptknow.exception.course.CourseNotFoundException;
 import ptknow.exception.enrollment.AlreadyEnrolledException;
+import ptknow.exception.enrollment.NotAllowedToSeeCourseMembersException;
 import ptknow.exception.enrollment.UserNotEnrollableException;
 import ptknow.model.auth.Auth;
 import ptknow.model.auth.Role;
@@ -96,6 +97,19 @@ public class EnrollmentService {
     @Transactional(readOnly = true)
     public List<Enrollment> findAllByCourse(Long courseId) {
         return repository.findAllByCourse_Id(courseId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Enrollment> findAllByCourse(Auth initiator, Long courseId) throws NotAllowedToSeeCourseMembersException {
+        if(!canGetMembers(initiator, courseId))
+            throw new NotAllowedToSeeCourseMembersException(initiator.getId());
+        return findAllByCourse(courseId);
+    }
+
+    private boolean canGetMembers(Auth initiator, Long courseId) {
+        return initiator.getRole() == Role.ADMIN ||
+                courseService.isOwner(courseId, initiator) ||
+                isEnrolled(initiator, courseId);
     }
 
     @Transactional(readOnly = true)
