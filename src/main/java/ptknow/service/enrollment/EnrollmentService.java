@@ -10,6 +10,7 @@ import ptknow.exception.course.CourseIsFullException;
 import ptknow.exception.course.CourseNotFoundException;
 import ptknow.exception.enrollment.AlreadyEnrolledException;
 import ptknow.exception.enrollment.UserNotEnrollableException;
+import ptknow.exception.enrollment.UserNotEnrolledException;
 import ptknow.model.auth.Auth;
 import ptknow.model.auth.Role;
 import ptknow.model.course.Course;
@@ -96,6 +97,13 @@ public class EnrollmentService {
     @Transactional(readOnly = true)
     public List<Enrollment> findAllByCourse(Long courseId) {
         return repository.findAllByCourse_Id(courseId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Enrollment> findAllByCourse(Auth initiator, Long courseId) throws UserNotEnrolledException {
+        if(!isEnrolled(initiator, courseId))
+            throw new UserNotEnrolledException(initiator.getId());
+        return findAllByCourse(courseId);
     }
 
     @Transactional(readOnly = true)
