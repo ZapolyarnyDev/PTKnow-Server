@@ -1,6 +1,7 @@
 package ptknow.model.auth;
 
 import ptknow.model.course.Course;
+import ptknow.model.enrollment.Enrollment;
 import ptknow.model.lesson.Lesson;
 import ptknow.model.profile.Profile;
 import ptknow.exception.credentials.InvalidCredentialsException;
@@ -63,6 +64,9 @@ public class Auth implements UserDetails {
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
     Set<Lesson> ownedLessons = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    Set<Enrollment> enrollments = new HashSet<>();
 
     @Builder
     public Auth(String email, String password, Role role) {
@@ -132,6 +136,18 @@ public class Auth implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public Set<Enrollment> getEnrollments() {
+        return Collections.unmodifiableSet(enrollments);
+    }
+
+    public boolean addEnrollment(Enrollment enrollment) {
+        return enrollments.add(enrollment);
+    }
+
+    public boolean removeEnrollment(Enrollment enrollment) {
+        return enrollments.remove(enrollment);
     }
 
     public Set<Course> getOwnedCourses() {

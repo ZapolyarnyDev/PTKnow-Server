@@ -1,6 +1,7 @@
 package ptknow.model.course;
 
 import ptknow.model.auth.Auth;
+import ptknow.model.enrollment.Enrollment;
 import ptknow.model.file.File;
 import ptknow.model.lesson.Lesson;
 import ptknow.exception.credentials.InvalidCredentialsException;
@@ -66,6 +67,10 @@ public class Course {
     @Getter
     Auth owner;
 
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    @Builder.Default
+    Set<Enrollment> enrollments = new HashSet<>();
+
     @Setter
     @Column(nullable = false)
     @Getter
@@ -111,6 +116,18 @@ public class Course {
 
     public boolean removeEditor(Auth e) {
         return e.removeEditCourse(this) && editors.remove(e);
+    }
+
+    public Set<Enrollment> getEnrollments() {
+        return Collections.unmodifiableSet(enrollments);
+    }
+
+    public boolean addEnrollment(Enrollment enrollment) {
+        return enrollments.add(enrollment);
+    }
+
+    public boolean removeEnrollment(Enrollment enrollment) {
+        return enrollments.remove(enrollment);
     }
 }
 
