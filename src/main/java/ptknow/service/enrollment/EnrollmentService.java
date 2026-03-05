@@ -107,8 +107,10 @@ public class EnrollmentService {
     }
 
     private boolean canGetMembers(Auth initiator, Long courseId) {
+        var course = courseService.findCourseById(courseId);
         return initiator.getRole() == Role.ADMIN ||
-                courseService.isOwner(courseId, initiator) ||
+                course.getOwner().equals(initiator) ||
+                course.hasEditor(initiator) ||
                 isEnrolled(initiator, courseId);
     }
 
