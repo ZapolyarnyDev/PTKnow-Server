@@ -45,7 +45,8 @@ public class GlobalExceptionHandler {
             EmailAlreadyUsedException.class,
             CourseAlreadyExists.class,
             CourseTagAlreadyExists.class,
-            AlreadyEnrolledException.class
+            AlreadyEnrolledException.class,
+            DataIntegrityViolationException.class
     })
     public ResponseEntity<ApiError> handleConflict(RuntimeException ex, HttpServletRequest req) {
         return build(HttpStatus.CONFLICT, "resource_already_exists", req, ex.getMessage());
