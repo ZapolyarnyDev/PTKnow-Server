@@ -113,7 +113,7 @@ public class EnrollmentService {
     }
 
     @Transactional(readOnly = true)
-    public List<Enrollment> findAllByUser(Long userId) {
+    public List<Enrollment> findAllByUser(UUID userId) {
         return repository.findAllByUser_Id(userId);
     }
 }
