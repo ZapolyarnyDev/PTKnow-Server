@@ -3,6 +3,7 @@ package ptknow.api.exception;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -21,6 +22,8 @@ import ptknow.exception.course.*;
 import ptknow.exception.credentials.InvalidCredentialsException;
 import ptknow.exception.email.EmailAlreadyUsedException;
 import ptknow.exception.email.EmailNotFoundException;
+import ptknow.exception.enrollment.AlreadyEnrolledException;
+import ptknow.exception.enrollment.UserNotEnrollableException;
 import ptknow.exception.file.FileNotFoundException;
 import ptknow.exception.lesson.LessonCannotBeCreatedException;
 import ptknow.exception.lesson.LessonNotFoundException;
@@ -41,7 +44,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({
             EmailAlreadyUsedException.class,
             CourseAlreadyExists.class,
-            CourseTagAlreadyExists.class
+            CourseTagAlreadyExists.class,
+            AlreadyEnrolledException.class
     })
     public ResponseEntity<ApiError> handleConflict(RuntimeException ex, HttpServletRequest req) {
         return build(HttpStatus.CONFLICT, "resource_already_exists", req, ex.getMessage());
@@ -54,7 +58,8 @@ public class GlobalExceptionHandler {
             CourseNotFoundException.class,
             LessonNotFoundException.class,
             EmailNotFoundException.class,
-            NoHandlerFoundException.class
+            NoHandlerFoundException.class,
+            CourseNotFoundException.class
     })
     public ResponseEntity<ApiError> handleNotFound(Exception ex, HttpServletRequest req) {
         return build(HttpStatus.NOT_FOUND, "resource_not_found", req, ex.getMessage());
@@ -68,7 +73,9 @@ public class GlobalExceptionHandler {
             MissingRequestValueException.class,
             ConstraintViolationException.class,
             HandlerMethodValidationException.class,
-            MultipartException.class
+            MultipartException.class,
+            CourseIsFullException.class,
+            DataIntegrityViolationException.class
     })
     public ResponseEntity<ApiError> handleBadRequest(Exception ex, HttpServletRequest req) {
         return build(HttpStatus.BAD_REQUEST, "bad_request", req, ex.getMessage());
@@ -78,7 +85,8 @@ public class GlobalExceptionHandler {
             CourseCannotBeEditByUserException.class,
             CourseNotOwnedByUserException.class,
             LessonNotOwnedException.class,
-            LessonCannotBeCreatedException.class
+            LessonCannotBeCreatedException.class,
+            UserNotEnrollableException.class
     })
     public ResponseEntity<ApiError> handleForbidden(Exception ex, HttpServletRequest req) {
         return build(HttpStatus.FORBIDDEN, "forbidden", req, ex.getMessage());
