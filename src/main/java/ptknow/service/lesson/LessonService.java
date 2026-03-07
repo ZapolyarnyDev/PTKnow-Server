@@ -3,6 +3,7 @@ package ptknow.service.lesson;
 import ptknow.dto.lesson.CreateLessonDTO;
 import ptknow.exception.lesson.LessonCannotBeCreatedException;
 import ptknow.exception.lesson.LessonNotOwnedException;
+import ptknow.exception.lesson.NotAllowedToSeeLessonInfo;
 import ptknow.model.auth.Auth;
 import ptknow.model.auth.Role;
 import ptknow.model.course.Course;
@@ -10,6 +11,7 @@ import ptknow.model.lesson.Lesson;
 import ptknow.exception.lesson.LessonNotFoundException;
 import ptknow.repository.lesson.LessonRepository;
 import ptknow.service.OwnershipService;
+import ptknow.service.course.CourseAccessService;
 import ptknow.service.course.CourseService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class LessonService implements OwnershipService<Long> {
 
     LessonRepository lessonRepository;
     CourseService courseService;
+    CourseAccessService accessService;
 
     @Transactional
     public Lesson createLesson(Long courseId, Auth initiator, CreateLessonDTO dto) throws LessonCannotBeCreatedException {
@@ -56,7 +59,25 @@ public class LessonService implements OwnershipService<Long> {
     }
 
     @Transactional(readOnly = true)
+    public Lesson seeById(Long id, Auth initiator) throws NotAllowedToSeeLessonInfo {
+        var lesson = findById(id);
+
+        if(!accessService.canSee(lesson.getCourse(), initiator))
+            throw new NotAllowedToSeeLessonInfo(initiator.getId());
+
+        return lesson;
+    }
+
+    @Transactional(readOnly = true)
     public List<Lesson> findAllByCourse(Long courseId) {
+        return lessonRepository.getAllByCourse_Id(courseId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Lesson> findAllByCourse(Long courseId, Auth initiator) {
+        if(!accessService.canSee(courseId, initiator))
+            throw new NotAllowedToSeeLessonInfo(initiator.getId());
+
         return lessonRepository.getAllByCourse_Id(courseId);
     }
 

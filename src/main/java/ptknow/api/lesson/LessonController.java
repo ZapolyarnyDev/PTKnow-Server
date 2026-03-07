@@ -38,14 +38,22 @@ public class LessonController {
     }
 
     @GetMapping("/{lessonId}")
-    public ResponseEntity<LessonDTO> getLesson(@PathVariable Long lessonId) {
-        var lesson = lessonMapper.toDTO(lessonService.findById(lessonId));
+    @PreAuthorize("hasAnyRole('GUEST', 'STUDENT', 'TEACHER', 'ADMIN')")
+    public ResponseEntity<LessonDTO> getLesson(
+            @PathVariable Long lessonId,
+            @AuthenticationPrincipal Auth auth
+    ) {
+        var lesson = lessonMapper.toDTO(lessonService.seeById(lessonId, auth));
         return ResponseEntity.ok(lesson);
     }
 
     @GetMapping("/course/{courseId}")
-    public ResponseEntity<List<LessonDTO>> getLessonsByCourse(@PathVariable Long courseId) {
-        var lessons = lessonService.findAllByCourse(courseId).stream()
+    @PreAuthorize("hasAnyRole('GUEST', 'STUDENT', 'TEACHER', 'ADMIN')")
+    public ResponseEntity<List<LessonDTO>> getLessonsByCourse(
+            @PathVariable Long courseId,
+            @AuthenticationPrincipal Auth auth
+    ) {
+        var lessons = lessonService.findAllByCourse(courseId, auth).stream()
                 .map(lessonMapper::toDTO)
                 .toList();
         return ResponseEntity.ok(lessons);

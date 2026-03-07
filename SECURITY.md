@@ -131,8 +131,8 @@ unenroll - отмена записи субъекта на ресурс
 ### LessonController
 
 - `POST /v0/lessons/{courseId}` - `OWNER(course)`, `EDITOR(course)`, `ADMIN` - `сделано`
-- `GET /v0/lessons/{lessonId}` - `ENROLLED`, `TEACHER`, `ADMIN` - `Нет в доменной модели`
-- `GET /v0/lessons/course/{courseId}` - `ENROLLED`, `TEACHER`, `ADMIN` - `Нет в доменной модели`
+- `GET /v0/lessons/{lessonId}` - `OWNER(course)`, `EDITOR(course)`, `ENROLLED`, `ADMIN` - `сделано`
+- `GET /v0/lessons/course/{courseId}` - `OWNER(course)`, `EDITOR(course)`, `ENROLLED`, `ADMIN` - `сделано`
 - `DELETE /v0/lessons/{lessonId}` - `OWNER(lesson)`, `OWNER(course)`, `ADMIN` - `сделано`
 
 ## Матрица доступа: потенциально необходимые endpoint-ы

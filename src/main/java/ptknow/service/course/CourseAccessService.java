@@ -36,14 +36,20 @@ public class CourseAccessService {
 
     @Transactional(readOnly = true)
     public Course access(Course course, Auth auth) {
-        boolean canSee = auth.getRole() == Role.ADMIN ||
+        if(canSee(course, auth))
+            return course;
+        throw new NotAllowedToSeeCourseInfoException(auth.getId());
+    }
+
+    public boolean canSee(Long courseId, Auth auth) {
+        return canSee(findCourseById(courseId), auth);
+    }
+
+    public boolean canSee(Course course, Auth auth) {
+        return auth.getRole() == Role.ADMIN ||
                 course.getOwner().equals(auth) ||
                 course.hasEditor(auth) ||
                 enrollmentRepository.existsByUser_IdAndCourse_Id(auth.getId(), course.getId());
-
-        if(canSee)
-            return course;
-        throw new NotAllowedToSeeCourseInfoException(auth.getId());
     }
 
     private Course findCourseByHandle(String handle) {
