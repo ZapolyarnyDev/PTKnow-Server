@@ -39,6 +39,7 @@ public class CourseService implements HandleService<Course>, OwnershipService<Lo
     CourseTagRepository courseTagRepository;
     HandleGenerator handleGenerator;
     FileService fileService;
+    CourseAccessService accessService;
 
     @Transactional
     public Course publishCourse(CreateCourseDTO dto, Auth initiator, MultipartFile preview) throws IOException {
@@ -142,6 +143,15 @@ public class CourseService implements HandleService<Course>, OwnershipService<Lo
     public Course getByHandle(String handle) {
         return repository.findByHandle(handle)
                 .orElseThrow(() -> new CourseNotFoundException(handle));
+    }
+
+    @Override
+    public Course seeByHandle(String handle, Auth initiator) {
+        return accessService.access(handle, initiator);
+    }
+
+    public Course seeById(Long courseId, Auth initiator) {
+        return accessService.access(courseId, initiator);
     }
 
     @Override

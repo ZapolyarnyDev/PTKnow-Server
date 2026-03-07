@@ -87,7 +87,8 @@ public class GlobalExceptionHandler {
             LessonNotOwnedException.class,
             LessonCannotBeCreatedException.class,
             UserNotEnrollableException.class,
-            NotAllowedToSeeCourseMembersException.class
+            NotAllowedToSeeCourseMembersException.class,
+            NotAllowedToSeeCourseInfoException.class
     })
     public ResponseEntity<ApiError> handleForbidden(Exception ex, HttpServletRequest req) {
         return build(HttpStatus.FORBIDDEN, "forbidden", req, ex.getMessage());

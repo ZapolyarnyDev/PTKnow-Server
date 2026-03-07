@@ -57,14 +57,22 @@ public class CourseController {
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<CourseDTO> getCourse(@PathVariable Long id) {
-        CourseDTO course = courseMapper.courseToDTO(courseService.findCourseById(id));
+    @PreAuthorize("hasAnyRole('GUEST', 'STUDENT', 'TEACHER', 'ADMIN')")
+    public ResponseEntity<CourseDTO> getCourse(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Auth auth
+    ) {
+        CourseDTO course = courseMapper.courseToDTO(courseService.seeById(id, auth));
         return ResponseEntity.ok(course);
     }
 
     @GetMapping("/handle/{handle}")
-    public ResponseEntity<CourseDTO> getCourse(@PathVariable String handle) {
-        CourseDTO course = courseMapper.courseToDTO(courseService.getByHandle(handle));
+    @PreAuthorize("hasAnyRole('GUEST', 'STUDENT', 'TEACHER', 'ADMIN')")
+    public ResponseEntity<CourseDTO> getCourse(
+            @PathVariable String handle,
+            @AuthenticationPrincipal Auth auth
+    ) {
+        CourseDTO course = courseMapper.courseToDTO(courseService.seeByHandle(handle, auth));
         return ResponseEntity.ok(course);
     }
 

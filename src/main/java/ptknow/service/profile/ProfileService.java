@@ -72,6 +72,14 @@ public class ProfileService implements HandleService<Profile> {
     }
 
     @Transactional(readOnly = true)
+    @Override
+    public Profile seeByHandle(String handle, Auth initiator) {
+        //TODO add access guard
+        return repository.findByHandle(handle)
+                .orElseThrow(() -> new UserNotFoundException(handle));
+    }
+
+    @Transactional(readOnly = true)
     public Profile getProfile(UUID userId) {
         return repository.findByUserId(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
