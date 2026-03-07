@@ -1,5 +1,7 @@
 package ptknow.repository.course;
 
+import jakarta.persistence.LockModeType;
+import org.springframework.data.jpa.repository.Lock;
 import ptknow.model.course.Course;
 import ptknow.model.course.CourseTag;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,5 +18,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     boolean existsByHandle(String handle);
     int countByCourseTagsContains(CourseTag courseTagEntity);
     boolean existsByIdAndOwner_Id(Long id, UUID ownerId);
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    Optional<Course> findByIdForUpdate(Long id);
 }
 

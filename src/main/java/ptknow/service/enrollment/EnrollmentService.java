@@ -40,7 +40,7 @@ public class EnrollmentService {
         if(isEnrolled(initiator, courseId))
             throw new AlreadyEnrolledException(initiator.getId());
 
-        var course = courseService.findCourseById(courseId);
+        var course = courseService.findCourseByIdForUpdate(courseId);
 
         if(getEnrolledAmount(courseId) >= course.getMaxUsersAmount())
             throw new CourseIsFullException(courseId);

@@ -112,6 +112,12 @@ public class CourseService implements HandleService<Course>, OwnershipService<Lo
                 .orElseThrow(() -> new CourseNotFoundException(courseId));
     }
 
+    @Transactional
+    public Course findCourseByIdForUpdate(Long courseId) {
+        return repository.findByIdForUpdate(courseId)
+                .orElseThrow(() -> new CourseNotFoundException(courseId));
+    }
+
     public boolean canEdit(Course course, Auth auth) {
         return auth.getRole() == Role.ADMIN ||
                 course.getOwner().equals(auth) ||
