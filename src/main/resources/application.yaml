@@ -16,6 +16,10 @@ spring:
   application:
     name: ptknow
 
+app:
+  file:
+    upload-dir: "uploads"
+
 security:
   jwt:
     issuer: ${JWT_ISSUER}

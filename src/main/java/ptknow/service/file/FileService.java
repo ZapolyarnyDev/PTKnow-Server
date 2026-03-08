@@ -2,6 +2,7 @@ package ptknow.service.file;
 
 import ptknow.model.file.File;
 import ptknow.exception.file.FileNotFoundException;
+import ptknow.properties.FileStorageProperties;
 import ptknow.repository.file.FileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,10 @@ import java.util.UUID;
 public class FileService {
 
     private final FileRepository fileRepository;
-
-    private final Path root = Paths.get("uploads");
+    private final FileStorageProperties fileStorageProperties;
 
     public File saveFile(MultipartFile file) throws IOException {
+        Path root = Paths.get(fileStorageProperties.getUploadDir());
         if (!Files.exists(root)) {
             Files.createDirectories(root);
         }
