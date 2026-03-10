@@ -12,16 +12,16 @@ import java.util.UUID;
 
 @Repository
 public interface FileAttachmentRepository extends JpaRepository<FileAttachment, Long> {
-    Set<FileAttachment> findAllByResourceTypeAndResourceId(ResourceType resourceType, String resourceId);
+    Set<FileAttachment> findAllByResourceTypeAndResource_Id(ResourceType resourceType, String resourceId);
 
-    Set<FileAttachment> findAllByFile_IdAndResourceTypeAndResourceIdAndPurpose(
+    Set<FileAttachment> findAllByFile_IdAndResourceTypeAndResource_IdAndPurpose(
             UUID fileId,
             ResourceType resourceType,
             String resourceId,
             Purpose purpose
     );
 
-    Set<FileAttachment> findAllByOwnerId(UUID ownerId);
+    Set<FileAttachment> findAllByOwner_Id(UUID ownerId);
 
     boolean existsByIdAndOwner_Id(Long id, UUID ownerId);
 
