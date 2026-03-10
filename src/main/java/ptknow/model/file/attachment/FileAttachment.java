@@ -3,6 +3,7 @@ package ptknow.model.file.attachment;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import ptknow.model.auth.Auth;
 import ptknow.model.file.File;
 import ptknow.model.file.attachment.resource.Purpose;
 import ptknow.model.file.attachment.resource.ResourceType;
@@ -43,4 +44,8 @@ public class FileAttachment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "file_id", nullable = false, updatable = false)
     File file;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", nullable = false, updatable = false)
+    Auth owner;
 }

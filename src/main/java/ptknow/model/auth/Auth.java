@@ -2,6 +2,7 @@ package ptknow.model.auth;
 
 import ptknow.model.course.Course;
 import ptknow.model.enrollment.Enrollment;
+import ptknow.model.file.attachment.FileAttachment;
 import ptknow.model.lesson.Lesson;
 import ptknow.model.profile.Profile;
 import ptknow.exception.credentials.InvalidCredentialsException;
@@ -67,6 +68,9 @@ public class Auth implements UserDetails {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     Set<Enrollment> enrollments = new HashSet<>();
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    Set<FileAttachment> fileAttachments = new HashSet<>();
 
     @Builder
     public Auth(String email, String password, Role role) {
@@ -136,6 +140,18 @@ public class Auth implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public Set<FileAttachment> getFileAttachments() {
+        return Collections.unmodifiableSet(fileAttachments);
+    }
+
+    public boolean addFileAttachment(FileAttachment attachment) {
+        return fileAttachments.add(attachment);
+    }
+
+    public boolean removeFileAttachment(FileAttachment attachment) {
+        return fileAttachments.remove(attachment);
     }
 
     public Set<Enrollment> getEnrollments() {

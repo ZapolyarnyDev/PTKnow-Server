@@ -6,6 +6,7 @@ import ptknow.model.file.attachment.FileAttachment;
 import ptknow.model.file.attachment.resource.Purpose;
 import ptknow.model.file.attachment.resource.ResourceType;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,6 +20,10 @@ public interface FileAttachmentRepository extends JpaRepository<FileAttachment, 
             String resourceId,
             Purpose purpose
     );
+
+    Set<FileAttachment> findAllByOwnerId(UUID ownerId);
+
+    boolean existsByIdAndOwner_Id(Long id, UUID ownerId);
 
     void deleteByFile_Id(UUID fileId);
 }
