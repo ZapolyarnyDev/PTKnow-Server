@@ -10,6 +10,7 @@ import ptknow.model.course.Course;
 import ptknow.model.lesson.Lesson;
 import ptknow.exception.lesson.LessonNotFoundException;
 import ptknow.repository.lesson.LessonRepository;
+import ptknow.service.AccessService;
 import ptknow.service.OwnershipService;
 import ptknow.service.course.CourseAccessService;
 import ptknow.service.course.CourseService;
@@ -24,7 +25,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class LessonService implements OwnershipService<Long> {
+public class LessonService implements OwnershipService<Long>, AccessService<Long> {
 
     LessonRepository lessonRepository;
     CourseService courseService;
@@ -111,6 +112,12 @@ public class LessonService implements OwnershipService<Long> {
         return auth.getRole() == Role.ADMIN ||
                 lesson.getOwner().equals(auth) ||
                 lesson.getCourse().getOwner().equals(auth);
+    }
+
+    @Override
+    public boolean canSee(Long id, Auth initiator) {
+        var lesson = findById(id);
+        return accessService.canSee(lesson.getCourse().getId(), initiator);
     }
 }
 

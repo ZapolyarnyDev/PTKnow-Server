@@ -1,5 +1,10 @@
 package ptknow.api.file;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import ptknow.exception.file.FileAccessDeniedException;
+import ptknow.model.auth.Auth;
+import ptknow.service.file.FileAccessService;
 import ptknow.service.file.FileService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +27,17 @@ import java.util.UUID;
 public class FileController {
 
     FileService fileService;
+    FileAccessService accessService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<byte[]> getFile(@PathVariable UUID id) throws IOException {
+    @PreAuthorize("hasAnyRole('GUEST', 'STUDENT', 'TEACHER', 'ADMIN')")
+    public ResponseEntity<byte[]> getFile(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal Auth user
+            ) throws IOException {
+        if(!accessService.canRead(id, user))
+            throw new FileAccessDeniedException("You don't have permissions to view this file");
+
         byte[] data = fileService.getFile(id);
         String contentType = fileService.getContentType(id);
 

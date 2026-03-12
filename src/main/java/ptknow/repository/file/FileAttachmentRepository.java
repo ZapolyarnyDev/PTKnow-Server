@@ -12,9 +12,10 @@ import java.util.UUID;
 
 @Repository
 public interface FileAttachmentRepository extends JpaRepository<FileAttachment, Long> {
-    Set<FileAttachment> findAllByResourceTypeAndResource_Id(ResourceType resourceType, String resourceId);
+    Set<FileAttachment> findAllByResourceTypeAndResourceId(ResourceType resourceType, String resourceId);
+    Set<FileAttachment> findAllByFile_Id(UUID fileId);
 
-    Optional<FileAttachment> findByFile_IdAndResourceTypeAndResource_IdAndPurpose(
+    Optional<FileAttachment> findByFile_IdAndResourceTypeAndResourceIdAndPurpose(
             UUID fileId,
             ResourceType resourceType,
             String resourceId,

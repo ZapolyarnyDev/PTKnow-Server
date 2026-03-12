@@ -25,6 +25,8 @@ import ptknow.exception.email.EmailNotFoundException;
 import ptknow.exception.enrollment.AlreadyEnrolledException;
 import ptknow.exception.enrollment.NotAllowedToSeeCourseMembersException;
 import ptknow.exception.enrollment.UserNotEnrollableException;
+import ptknow.exception.file.FileAccessDeniedException;
+import ptknow.exception.file.FileAttachmentNotFoundException;
 import ptknow.exception.file.FileNotFoundException;
 import ptknow.exception.lesson.LessonCannotBeCreatedException;
 import ptknow.exception.lesson.LessonNotFoundException;
@@ -61,7 +63,8 @@ public class GlobalExceptionHandler {
             CourseNotFoundException.class,
             LessonNotFoundException.class,
             EmailNotFoundException.class,
-            NoHandlerFoundException.class
+            NoHandlerFoundException.class,
+            FileAttachmentNotFoundException.class
     })
     public ResponseEntity<ApiError> handleNotFound(Exception ex, HttpServletRequest req) {
         return build(HttpStatus.NOT_FOUND, "resource_not_found", req, ex.getMessage());
@@ -90,7 +93,8 @@ public class GlobalExceptionHandler {
             UserNotEnrollableException.class,
             NotAllowedToSeeCourseMembersException.class,
             NotAllowedToSeeCourseInfoException.class,
-            NotAllowedToSeeLessonInfo.class
+            NotAllowedToSeeLessonInfo.class,
+            FileAccessDeniedException.class
     })
     public ResponseEntity<ApiError> handleForbidden(Exception ex, HttpServletRequest req) {
         return build(HttpStatus.FORBIDDEN, "forbidden", req, ex.getMessage());

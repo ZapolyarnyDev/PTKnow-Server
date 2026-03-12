@@ -18,6 +18,7 @@ import ptknow.generator.handle.HandleGenerator;
 import ptknow.repository.auth.AuthRepository;
 import ptknow.repository.course.CourseRepository;
 import ptknow.repository.course.CourseTagRepository;
+import ptknow.service.AccessService;
 import ptknow.service.HandleService;
 import ptknow.service.OwnershipService;
 import ptknow.service.file.FileService;
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
-public class CourseService implements HandleService<Course>, OwnershipService<Long> {
+public class CourseService implements HandleService<Course>, OwnershipService<Long>, AccessService<Long> {
 
     AuthRepository authRepository;
     CourseRepository repository;
@@ -204,6 +205,11 @@ public class CourseService implements HandleService<Course>, OwnershipService<Lo
 
         authRepository.save(target);
         return repository.save(course);
+    }
+
+    @Override
+    public boolean canSee(Long id, Auth initiator) {
+        return accessService.canSee(id, initiator);
     }
 }
 

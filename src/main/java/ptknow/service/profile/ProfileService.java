@@ -8,6 +8,7 @@ import ptknow.exception.user.UserNotFoundException;
 import ptknow.generator.handle.HandleGenerator;
 import ptknow.repository.profile.ProfileRepository;
 import ptknow.service.HandleService;
+import ptknow.service.OwnershipService;
 import ptknow.service.file.FileService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class ProfileService implements HandleService<Profile> {
+public class ProfileService implements HandleService<Profile>, OwnershipService<UUID> {
 
     FileService fileService;
     ProfileRepository repository;
@@ -83,6 +84,16 @@ public class ProfileService implements HandleService<Profile> {
     public Profile getProfile(UUID userId) {
         return repository.findByUserId(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
+    }
+
+    @Override
+    public boolean isOwner(UUID resourceId, Auth auth) {
+        return getProfile(resourceId).equals(auth.getProfile());
+    }
+
+    @Override
+    public Auth getOwner(UUID resourceId) {
+        return getProfile(resourceId).getUser();
     }
 }
 
