@@ -9,7 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -19,6 +22,13 @@ public class FileService {
 
     private final FileRepository fileRepository;
     private final FileStorageProperties fileStorageProperties;
+
+    public record OpenedFile(
+            Path path,
+            String contentType,
+            String originalFilename,
+            long size
+    ) {}
 
     public File saveFile(MultipartFile file) throws IOException {
         Path root = Paths.get(fileStorageProperties.getUploadDir());
@@ -41,12 +51,21 @@ public class FileService {
         return fileRepository.save(entity);
     }
 
-    public byte[] getFile(UUID id) throws IOException {
+    public OpenedFile openFile(UUID id) throws IOException {
         File fileEntity = fileRepository.findById(id)
                 .orElseThrow(() -> new FileNotFoundException("File not found"));
 
         Path path = Paths.get(fileEntity.getStoragePath());
-        return Files.readAllBytes(path);
+        if (!Files.exists(path)) {
+            throw new FileNotFoundException("Stored file content not found");
+        }
+
+        return new OpenedFile(
+                path,
+                fileEntity.getContentType(),
+                fileEntity.getOriginalFilename(),
+                Files.size(path)
+        );
     }
 
     public void deleteFile(UUID id) throws IOException {
@@ -61,10 +80,5 @@ public class FileService {
         fileRepository.delete(fileEntity);
     }
 
-    public String getContentType(UUID id) {
-        File fileEntity = fileRepository.findById(id)
-                .orElseThrow(() -> new FileNotFoundException("File not found"));
-        return fileEntity.getContentType();
-    }
 }
 

@@ -13,6 +13,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.UUID;
 
 @RestController
@@ -34,20 +37,23 @@ public class FileController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('GUEST', 'STUDENT', 'TEACHER', 'ADMIN')")
-    public ResponseEntity<byte[]> getFile(
+    public ResponseEntity<Resource> getFile(
             @PathVariable UUID id,
             @AuthenticationPrincipal Auth user
             ) throws IOException {
         if(!accessService.canRead(id, user))
             throw new FileAccessDeniedException("You don't have permissions to view this file");
 
-        byte[] data = fileService.getFile(id);
-        String contentType = fileService.getContentType(id);
+        var openedFile = fileService.openFile(id);
+        var stream = new InputStreamResource(Files.newInputStream(openedFile.path()));
+        String filename = openedFile.originalFilename() != null ? openedFile.originalFilename() : id.toString();
+        String contentType = openedFile.contentType();
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + id + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
                 .contentType(MediaType.parseMediaType(contentType != null ? contentType : MediaType.APPLICATION_OCTET_STREAM_VALUE))
-                .body(data);
+                .contentLength(openedFile.size())
+                .body(stream);
     }
 
     @DeleteMapping("/{id}")
