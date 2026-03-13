@@ -14,6 +14,7 @@ spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-start
 spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
 spring-boot-starter-oauth2-client = { module = "org.springframework.boot:spring-boot-starter-oauth2-client" }
 spring-boot-starter-oauth2-resource-server = { module = "org.springframework.boot:spring-boot-starter-oauth2-resource-server" }
+spring-boot-starter-flyway = { module = "org.springframework.boot:spring-boot-starter-flyway" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
