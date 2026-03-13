@@ -28,10 +28,12 @@ import ptknow.exception.enrollment.UserNotEnrollableException;
 import ptknow.exception.file.FileAccessDeniedException;
 import ptknow.exception.file.FileAttachmentNotFoundException;
 import ptknow.exception.file.FileNotFoundException;
+import ptknow.exception.file.InvalidResourceIdException;
 import ptknow.exception.lesson.LessonCannotBeCreatedException;
 import ptknow.exception.lesson.LessonNotFoundException;
 import ptknow.exception.lesson.LessonNotOwnedException;
 import ptknow.exception.lesson.NotAllowedToSeeLessonInfo;
+import ptknow.exception.profile.ProfileNotFoundException;
 import ptknow.exception.token.InvalidTokenException;
 import ptknow.exception.token.TokenNotFoundException;
 import ptknow.exception.user.UserNotFoundException;
@@ -64,7 +66,8 @@ public class GlobalExceptionHandler {
             LessonNotFoundException.class,
             EmailNotFoundException.class,
             NoHandlerFoundException.class,
-            FileAttachmentNotFoundException.class
+            FileAttachmentNotFoundException.class,
+            ProfileNotFoundException.class
     })
     public ResponseEntity<ApiError> handleNotFound(Exception ex, HttpServletRequest req) {
         return build(HttpStatus.NOT_FOUND, "resource_not_found", req, ex.getMessage());
@@ -79,7 +82,8 @@ public class GlobalExceptionHandler {
             ConstraintViolationException.class,
             HandlerMethodValidationException.class,
             MultipartException.class,
-            CourseIsFullException.class
+            CourseIsFullException.class,
+            InvalidResourceIdException.class
     })
     public ResponseEntity<ApiError> handleBadRequest(Exception ex, HttpServletRequest req) {
         return build(HttpStatus.BAD_REQUEST, "bad_request", req, ex.getMessage());

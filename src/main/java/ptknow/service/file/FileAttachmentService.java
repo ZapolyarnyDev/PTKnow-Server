@@ -1,0 +1,105 @@
+package ptknow.service.file;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ptknow.exception.course.CourseNotFoundException;
+import ptknow.exception.file.FileAccessDeniedException;
+import ptknow.exception.file.InvalidResourceIdException;
+import ptknow.exception.lesson.LessonNotFoundException;
+import ptknow.exception.profile.ProfileNotFoundException;
+import ptknow.model.auth.Auth;
+import ptknow.model.file.File;
+import ptknow.model.file.attachment.FileAttachment;
+import ptknow.model.file.attachment.FileVisibility;
+import ptknow.model.file.attachment.resource.Purpose;
+import ptknow.model.file.attachment.resource.ResourceType;
+import ptknow.repository.course.CourseRepository;
+import ptknow.repository.file.FileAttachmentRepository;
+import ptknow.repository.lesson.LessonRepository;
+import ptknow.repository.profile.ProfileRepository;
+
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class FileAttachmentService {
+
+    FileAttachmentRepository attachmentRepository;
+    CourseRepository courseRepository;
+    LessonRepository lessonRepository;
+    ProfileRepository profileRepository;
+
+    @Transactional
+    public FileAttachment attach(
+            File file,
+            ResourceType resourceType,
+            String resourceId,
+            Purpose purpose,
+            FileVisibility visibility,
+            Auth owner
+    ) {
+        Auth resourceOwner = resolveResourceOwner(resourceType, resourceId);
+        if (!resourceOwner.equals(owner))
+            throw new FileAccessDeniedException("Attachment owner does not match resource owner");
+
+        FileAttachment attachment = FileAttachment.builder()
+                .file(file)
+                .resourceType(resourceType)
+                .resourceId(resourceId)
+                .purpose(purpose)
+                .fileVisibility(visibility)
+                .owner(owner)
+                .build();
+
+        owner.addFileAttachment(attachment);
+        return attachmentRepository.save(attachment);
+    }
+
+    @Transactional
+    public void deleteAllByFileId(UUID fileId) {
+        attachmentRepository.deleteByFile_Id(fileId);
+    }
+
+    private Auth resolveResourceOwner(ResourceType resourceType, String resourceId) {
+        return switch (resourceType) {
+            case PROFILE -> {
+                UUID profileId = parseUuidResourceId(resourceType, resourceId);
+                yield profileRepository.findById(profileId)
+                    .orElseThrow(() -> new ProfileNotFoundException(profileId))
+                    .getUser();
+            }
+            case COURSE -> {
+                Long courseId = parseLongResourceId(resourceType, resourceId);
+                yield courseRepository.findById(courseId)
+                    .orElseThrow(() -> new CourseNotFoundException(courseId))
+                    .getOwner();
+            }
+            case LESSON -> {
+                Long lessonId = parseLongResourceId(resourceType, resourceId);
+                yield lessonRepository.findById(lessonId)
+                    .orElseThrow(() -> new LessonNotFoundException(lessonId))
+                    .getOwner();
+            }
+        };
+    }
+
+    private UUID parseUuidResourceId(ResourceType resourceType, String resourceId) {
+        try {
+            return UUID.fromString(resourceId);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidResourceIdException(resourceType, resourceId, "UUID");
+        }
+    }
+
+    private Long parseLongResourceId(ResourceType resourceType, String resourceId) {
+        try {
+            return Long.valueOf(resourceId);
+        } catch (NumberFormatException e) {
+            throw new InvalidResourceIdException(resourceType, resourceId, "Long");
+        }
+    }
+}

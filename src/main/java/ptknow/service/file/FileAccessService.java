@@ -41,6 +41,18 @@ public class FileAccessService implements OwnershipService<Long> {
         return attachments.stream().anyMatch(attachment -> canRead(attachment, user));
     }
 
+    @Transactional(readOnly = true)
+    public boolean canDelete(UUID fileId, Auth user) {
+        if (user.getRole() == Role.ADMIN)
+            return true;
+
+        Set<FileAttachment> attachments = attachmentRepository.findAllByFile_Id(fileId);
+        if (attachments.isEmpty())
+            return false;
+
+        return attachments.stream().allMatch(attachment -> attachment.getOwner().equals(user));
+    }
+
     private boolean canRead(FileAttachment attachment, Auth user) {
         return switch (attachment.getFileVisibility()) {
             case PUBLIC -> true;

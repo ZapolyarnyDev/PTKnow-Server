@@ -6,12 +6,14 @@ import ptknow.exception.file.FileAccessDeniedException;
 import ptknow.model.auth.Auth;
 import ptknow.service.file.FileAccessService;
 import ptknow.service.file.FileService;
+import ptknow.service.file.FileWriteService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +30,7 @@ public class FileController {
 
     FileService fileService;
     FileAccessService accessService;
+    FileWriteService fileWriteService;
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('GUEST', 'STUDENT', 'TEACHER', 'ADMIN')")
@@ -45,6 +48,16 @@ public class FileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + id + "\"")
                 .contentType(MediaType.parseMediaType(contentType != null ? contentType : MediaType.APPLICATION_OCTET_STREAM_VALUE))
                 .body(data);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('GUEST', 'STUDENT', 'TEACHER', 'ADMIN')")
+    public ResponseEntity<Void> deleteFile(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal Auth user
+    ) throws IOException {
+        fileWriteService.deleteOwnedFile(id, user);
+        return ResponseEntity.noContent().build();
     }
 }
 

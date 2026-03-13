@@ -9,6 +9,7 @@ import ptknow.generator.handle.HandleGenerator;
 import ptknow.repository.profile.ProfileRepository;
 import ptknow.service.HandleService;
 import ptknow.service.OwnershipService;
+import ptknow.service.file.FileAttachmentService;
 import ptknow.service.file.FileService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,9 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import ptknow.model.file.attachment.FileVisibility;
+import ptknow.model.file.attachment.resource.Purpose;
+import ptknow.model.file.attachment.resource.ResourceType;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -26,6 +30,7 @@ import java.util.UUID;
 public class ProfileService implements HandleService<Profile>, OwnershipService<UUID> {
 
     FileService fileService;
+    FileAttachmentService fileAttachmentService;
     ProfileRepository repository;
     HandleGenerator handleGenerator;
 
@@ -55,14 +60,30 @@ public class ProfileService implements HandleService<Profile>, OwnershipService<
         return repository.save(profile);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Profile updateAvatar(UUID userId, MultipartFile file) throws IOException {
         Profile profile = getProfile(userId);
+        File oldAvatar = profile.getAvatar();
 
         File savedFile = fileService.saveFile(file);
         profile.setAvatar(savedFile);
+        Profile updatedProfile = repository.save(profile);
 
-        return repository.save(profile);
+        fileAttachmentService.attach(
+                savedFile,
+                ResourceType.PROFILE,
+                profile.getId().toString(),
+                Purpose.AVATAR,
+                FileVisibility.PUBLIC,
+                profile.getUser()
+        );
+
+        if (oldAvatar != null) {
+            fileAttachmentService.deleteAllByFileId(oldAvatar.getId());
+            fileService.deleteFile(oldAvatar.getId());
+        }
+
+        return updatedProfile;
     }
 
     @Transactional(readOnly = true)

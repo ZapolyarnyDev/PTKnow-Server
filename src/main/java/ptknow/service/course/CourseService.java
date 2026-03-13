@@ -12,6 +12,9 @@ import ptknow.model.auth.Role;
 import ptknow.model.course.Course;
 import ptknow.model.course.CourseTag;
 import ptknow.model.file.File;
+import ptknow.model.file.attachment.FileVisibility;
+import ptknow.model.file.attachment.resource.Purpose;
+import ptknow.model.file.attachment.resource.ResourceType;
 import ptknow.exception.course.*;
 import ptknow.exception.user.UserNotFoundException;
 import ptknow.generator.handle.HandleGenerator;
@@ -21,6 +24,7 @@ import ptknow.repository.course.CourseTagRepository;
 import ptknow.service.AccessService;
 import ptknow.service.HandleService;
 import ptknow.service.OwnershipService;
+import ptknow.service.file.FileAttachmentService;
 import ptknow.service.file.FileService;
 
 import java.io.IOException;
@@ -40,9 +44,10 @@ public class CourseService implements HandleService<Course>, OwnershipService<Lo
     CourseTagRepository courseTagRepository;
     HandleGenerator handleGenerator;
     FileService fileService;
+    FileAttachmentService fileAttachmentService;
     CourseAccessService accessService;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Course publishCourse(CreateCourseDTO dto, Auth initiator, MultipartFile preview) throws IOException {
         if (repository.existsByName(dto.name())) {
             throw new CourseAlreadyExists(dto.name());
@@ -67,6 +72,18 @@ public class CourseService implements HandleService<Course>, OwnershipService<Lo
         initiator.addOwnedCourse(entity);
 
         repository.save(entity);
+
+        if (previewFile != null) {
+            fileAttachmentService.attach(
+                    previewFile,
+                    ResourceType.COURSE,
+                    entity.getId().toString(),
+                    Purpose.PREVIEW,
+                    FileVisibility.ENROLLED,
+                    entity.getOwner()
+            );
+        }
+
         return entity;
     }
 
@@ -125,20 +142,34 @@ public class CourseService implements HandleService<Course>, OwnershipService<Lo
                 course.hasEditor(auth);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Course updatePreview(Long courseId, Auth initiator, MultipartFile file) throws IOException {
         Course course = findCourseById(courseId);
 
         if(!canEdit(course, initiator))
             throw new CourseCannotBeEditByUserException(initiator.getId());
 
+        File previousPreview = course.getPreview();
         File savedFile = fileService.saveFile(file);
-        if (course.getPreview() != null) {
-            fileService.deleteFile(course.getPreview().getId());
-        }
         course.setPreview(savedFile);
 
-        return repository.save(course);
+        Course updatedCourse = repository.save(course);
+
+        fileAttachmentService.attach(
+                savedFile,
+                ResourceType.COURSE,
+                course.getId().toString(),
+                Purpose.PREVIEW,
+                FileVisibility.ENROLLED,
+                course.getOwner()
+        );
+
+        if (previousPreview != null) {
+            fileAttachmentService.deleteAllByFileId(previousPreview.getId());
+            fileService.deleteFile(previousPreview.getId());
+        }
+
+        return updatedCourse;
     }
 
     @Transactional(readOnly = true)
