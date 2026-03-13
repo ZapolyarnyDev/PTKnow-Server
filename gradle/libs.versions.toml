@@ -22,6 +22,8 @@ mapstruct-processor = { module = "org.mapstruct:mapstruct-processor", version.re
 jnanoid = { module = "com.aventrix.jnanoid:jnanoid", version.ref = "jnanoid" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 h2 = { module = "com.h2database:h2" }
+flyway-core = { module = "org.flywaydb:flyway-core" }
+flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql" }
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }

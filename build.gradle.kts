@@ -32,6 +32,9 @@ dependencies {
 	implementation(libs.spring.boot.starter.validation)
 	implementation(libs.spring.boot.starter.web)
 
+	implementation(libs.flyway.core)
+	implementation(libs.flyway.database.postgresql)
+
 	runtimeOnly(libs.postgresql)
 
 	implementation(libs.spring.boot.starter.security)
